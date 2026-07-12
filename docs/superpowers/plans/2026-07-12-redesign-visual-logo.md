@@ -476,14 +476,16 @@ export default function AppShell({
             <ListItemText primary={item.label} />
           </ListItemButton>
         ))}
-        <ListItemButton
-          component="a"
-          href="/"
-          onClick={onLogout}
-          sx={{ color: "secondary.light" }}
-        >
-          <ListItemText primary="Sair" />
-        </ListItemButton>
+        {currentUser && (
+          <ListItemButton
+            component="a"
+            href="/"
+            onClick={onLogout}
+            sx={{ color: "secondary.light" }}
+          >
+            <ListItemText primary="Sair" />
+          </ListItemButton>
+        )}
       </List>
     </Box>
   );
@@ -698,7 +700,7 @@ Replace the entire contents of `src/App.css` with:
 - [ ] **Step 4: Verify the app still builds and starts**
 
 Run: `npm run build`
-Expected: build succeeds. Then run `npm start` and open `http://localhost:3000` — you should see the navy sidebar (desktop) with only "Sair" in it (not logged in yet), Login renders inside the cream content area. Resize the window below 768px — the sidebar should disappear and a pink top bar with a ☰ icon should appear; clicking it opens the navy drawer over the content.
+Expected: build succeeds. Then run `npm start` and open `http://localhost:3000` — you should see the navy sidebar (desktop) with no nav items and no "Sair" link (not logged in yet), Login renders inside the cream content area. Resize the window below 768px — the sidebar should disappear and a pink top bar with a ☰ icon should appear; clicking it opens the navy drawer over the content.
 
 - [ ] **Step 5: Commit**
 
