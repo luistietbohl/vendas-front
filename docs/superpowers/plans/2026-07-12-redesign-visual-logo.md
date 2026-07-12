@@ -376,7 +376,7 @@ describe('AppShell', () => {
     const mobileNav = screen.getByLabelText('abrir menu');
     fireEvent.click(mobileNav);
     const dialog = screen.getByRole('presentation');
-    expect(within(dialog).getByText('conteudo', { exact: false })).toBeTruthy();
+    expect(within(dialog).getByText('Venda')).toBeTruthy();
   });
 
   it('renders the page content passed as children', () => {
