@@ -78,14 +78,16 @@ export default function AppShell({
             <ListItemText primary={item.label} />
           </ListItemButton>
         ))}
-        <ListItemButton
-          component="a"
-          href="/"
-          onClick={onLogout}
-          sx={{ color: "secondary.light" }}
-        >
-          <ListItemText primary="Sair" />
-        </ListItemButton>
+        {currentUser && (
+          <ListItemButton
+            component="a"
+            href="/"
+            onClick={onLogout}
+            sx={{ color: "secondary.light" }}
+          >
+            <ListItemText primary="Sair" />
+          </ListItemButton>
+        )}
       </List>
     </Box>
   );

@@ -40,6 +40,7 @@ describe('AppShell', () => {
   it('renders no nav items when there is no current user', () => {
     renderShell({ currentUser: null });
     expect(screen.queryByText('Produtos')).not.toBeInTheDocument();
+    expect(screen.queryByText('Sair')).not.toBeInTheDocument();
   });
 
   it('opens the mobile drawer from the hamburger button', () => {
