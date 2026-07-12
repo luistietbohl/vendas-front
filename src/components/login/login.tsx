@@ -1,6 +1,8 @@
 import { ChangeEvent, Component } from "react";
 import authService from "../../auth/auth.service";
 import logo from "../../logo_bomcream.png";
+import { Box, Button, Paper, TextField, Typography } from "@mui/material";
+import { brandFont } from "../../theme";
 
 
 type Props = {};
@@ -17,6 +19,7 @@ class Login extends Component<Props, State> {
         this.onChangeLogin = this.onChangeLogin.bind(this);
         this.onChangePass = this.onChangePass.bind(this);
         this.login = this.login.bind(this);
+        this.onPressEnter = this.onPressEnter.bind(this);
 
         this.state = {
             login: "",
@@ -58,48 +61,65 @@ class Login extends Component<Props, State> {
         );
     }
 
+    onPressEnter(e: any) {
+        if (e.key === 'Enter') {
+            this.login();
+        }
+    }
+
     render() {
         const { currentUser, login, pass } = this.state;
         return (
-            <div>
-                <h2>Sistema de vendas!</h2>
-                {currentUser ? (
-                    <div className="custom-div-center">
-                        <img src={logo} alt={"logo"} style={{ width: '50%' }} />
-                        <h1>Serviço de vendas!</h1>
-                    </div>
-                ) : (
-                    <div className="submit-form">
-                        <div className="form-group">
-                            <label htmlFor="login">Login</label>
-                            <input
-                                type="text"
-                                className="form-control"
+            <Box sx={{ display: "flex", justifyContent: "center", mt: { xs: 2, md: 6 } }}>
+                <Paper
+                    elevation={3}
+                    sx={{
+                        p: 4,
+                        maxWidth: 380,
+                        width: "100%",
+                        borderRadius: "32px",
+                        textAlign: "center",
+                    }}
+                >
+                    <Typography sx={{ fontFamily: brandFont, fontSize: 32, color: "primary.dark", mb: 1 }}>
+                        Bom Cream
+                    </Typography>
+                    <Typography sx={{ mb: 3 }}>Sistema de vendas</Typography>
+                    {currentUser ? (
+                        <Box>
+                            <img src={logo} alt={"logo"} style={{ width: '80%' }} />
+                            <Typography variant="h6" sx={{ mt: 2 }}>Serviço de vendas!</Typography>
+                        </Box>
+                    ) : (
+                        <Box
+                            component="form"
+                            sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+                            onKeyPress={this.onPressEnter}
+                        >
+                            <TextField
                                 id="login"
+                                name="login"
+                                label="Login"
                                 required
                                 value={login}
                                 onChange={this.onChangeLogin}
-                                name="login"
                             />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="pass">Senha</label>
-                            <input
-                                type="password"
-                                className="form-control"
+                            <TextField
                                 id="pass"
+                                name="pass"
+                                label="Senha"
+                                type="password"
                                 required
                                 value={pass}
                                 onChange={this.onChangePass}
-                                name="pass"
                             />
-                        </div>
-                        <button onClick={this.login} className="btn btn-success">
-                            Login
-                        </button>
-                    </div>
-                )}
-            </div>
+                            <Button variant="contained" color="primary" onClick={this.login}>
+                                Login
+                            </Button>
+                        </Box>
+                    )}
+                </Paper>
+            </Box>
         )
     }
 }
