@@ -1,8 +1,9 @@
 import { Component } from "react";
-import { Switch, Route, Link } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { Switch, Route } from "react-router-dom";
+import { Box } from "@mui/material";
 import "./App.css";
 
+import AppShell from "./components/shell/AppShell";
 import AddProduto from "./components/produto/add-produto";
 import ProdutoList from "./components/produto/list-produto";
 import EditProduto from "./components/produto/edit-produto";
@@ -69,63 +70,15 @@ class App extends Component<Props, State> {
   render() {
     const { currentUser, showAdminBoard, showCaixaBoard } = this.state;
     return (
-      <div>
-        <nav className="navbar navbar-expand navbar-dark bg-dark">
-          <Link to={"/"} className="navbar-brand">
-            Sorveteria Bom Cream
-          </Link>
-          {currentUser && (
-            <div className="navbar-nav mr-auto">
-              <li className="nav-item">
-                <Link to={"/add_venda"} className="nav-link">
-                  Venda
-                </Link>
-              </li>
-              {(showAdminBoard || showCaixaBoard) && (
-                <li className="nav-item">
-                  <Link to={"/add_caixa"} className="nav-link">
-                    Caixa
-                  </Link>
-                </li>
-              )}
-              {(showAdminBoard || showCaixaBoard) && (
-                <li className="nav-item">
-                  <Link to={"/list_vendas"} className="nav-link">
-                    Lista Vendas
-                  </Link>
-                </li>
-              )}
-              <li className="nav-item">
-                <Link to={"/list_produto"} className="nav-link">
-                  Produtos
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link to={"/list_categoria"} className="nav-link">
-                  Categoria
-                </Link>
-              </li>
-              {showAdminBoard && (
-                <li className="nav-item">
-                  <Link to={"/list_funcionario"} className="nav-link">
-                    Funcionario
-                  </Link>
-                </li>
-              )}
-            </div>
-          )}
-          <div className="navbar-nav ml-auto">
-            <li className="nav-item">
-              <a href="/" className="nav-link" onClick={this.logOut}>
-                LogOut
-              </a>
-            </li>
-          </div>
-        </nav>
-
-        <div className="container mt-3 custom-container font-pricipal">
+      <AppShell
+        currentUser={currentUser}
+        showAdminBoard={showAdminBoard}
+        showCaixaBoard={showCaixaBoard}
+        onLogout={this.logOut}
+      >
+        <Box sx={{ p: { xs: 2, md: 4 } }}>
           <Switch>
-          <Route exact path={["/", "/login"]} component={Login} />
+            <Route exact path={["/", "/login"]} component={Login} />
             <Route exact path="/add_venda" component={AddVenda} />
             <Route exact path="/add_caixa" component={AddCaixa} />
             <Route exact path="/list_vendas" component={VendaList} />
@@ -139,8 +92,8 @@ class App extends Component<Props, State> {
             <Route exact path="/list_funcionario" component={FuncionarioList} />
             <Route path="/list_funcionario/:id" component={EditFuncionario} />
           </Switch>
-        </div>
-      </div>
+        </Box>
+      </AppShell>
     );
   }
 }

@@ -2,6 +2,8 @@ import { Component, ChangeEvent } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import FuncionarioService from "../../services/funcionario.service";
 import FuncionarioDTO from "../../types/funcionario.type";
+import { Box, Button, Grid, Paper, TextField, Typography } from "@mui/material";
+import PageHeader from "../shell/PageHeader";
 
 interface RouterProps {
     id: string;
@@ -83,66 +85,62 @@ export default class AddFuncionario extends Component<Props, State> {
         const { submitted, cpf, nome, valorHora } = this.state;
 
         return (
-            <div className="submit-form">
-                <h2>Cadastrar Funcionario</h2>
-                {submitted ? (
-                    <div>
-                        <h4>Funcionario enviado com sucesso!</h4>
-                        
-                        <button className="btn btn-success" onClick={this.newFuncionario}>
-                            Voltar
-                        </button>
-                    </div>
-                ) : (
-                    <div>
-                        <div className="form-group">
-                            <label htmlFor="cpf">Identificador</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="cpf"
-                                required
-                                value={cpf}
-                                onChange={this.onChangeUid}
-                                name="cpf"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="nome">Nome</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="nome"
-                                required
-                                value={nome}
-                                onChange={this.onChangeNome}
-                                name="nome"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="ordem">Valor hora</label>
-                            <input
-                                type="number"
-                                className="form-control"
-                                id="valorHora"
-                                required
-                                value={valorHora}
-                                onChange={this.onChangeValor}
-                                name="ordem"
-                            />
-                        </div>
-
-                        <Link
-                            to={"/list_funcionario/"}
-                            className="badge badge-danger mr-2">
-                            Voltar
-                        </Link>
-                        <button onClick={this.saveFuncionario} className="btn btn-success">
-                            Salvar
-                        </button>
-                    </div>
-
-                )}
+            <div>
+                <PageHeader title="Cadastrar Funcionario" />
+                <Paper sx={{ p: 3, maxWidth: 500 }}>
+                    {submitted ? (
+                        <Box>
+                            <Typography variant="h6" sx={{ mb: 2 }}>Funcionario enviado com sucesso!</Typography>
+                            <Button variant="contained" color="primary" onClick={this.newFuncionario}>
+                                Voltar
+                            </Button>
+                        </Box>
+                    ) : (
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Identificador"
+                                    required
+                                    value={cpf}
+                                    onChange={this.onChangeUid}
+                                    name="cpf"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Nome"
+                                    required
+                                    value={nome}
+                                    onChange={this.onChangeNome}
+                                    name="nome"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Valor hora"
+                                    type="number"
+                                    required
+                                    value={valorHora}
+                                    onChange={this.onChangeValor}
+                                    name="ordem"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Box sx={{ display: "flex", gap: 1.5 }}>
+                                    <Button component={Link} to={"/list_funcionario/"} variant="outlined" color="secondary">
+                                        Voltar
+                                    </Button>
+                                    <Button onClick={this.saveFuncionario} variant="contained" color="primary">
+                                        Salvar
+                                    </Button>
+                                </Box>
+                            </Grid>
+                        </Grid>
+                    )}
+                </Paper>
             </div>
         );
     }

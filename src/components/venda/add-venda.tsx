@@ -14,6 +14,8 @@ import CategoriaDTO from "../../types/categoria.type";
 import CategoriaService from "../../services/categoria.service";
 import CaixaService from "../../services/caixa.service";
 import logo from "../../logobomcreampretoebranco.png";
+import { Grid, Paper, Button, List, ListItem, ListItemText, Typography, Box } from "@mui/material";
+import PageHeader from "../shell/PageHeader";
 
 type Props = {};
 
@@ -435,6 +437,7 @@ export default class AddVenda extends Component<Props, State> {
 
         return (
             <div>
+                <PageHeader title="Nova Venda" />
                 <FormControl fullWidth>
                     <Collapse in={open} addEndListener={this.finalizaAlert}>
                         <Alert severity={msg === "Venda registrada com sucesso!" ? "success" : "error"}
@@ -443,23 +446,22 @@ export default class AddVenda extends Component<Props, State> {
                         </Alert>
                     </Collapse>
                     {caixa ? (
-                        <div className="row">
-                            <div className="col-6 no-printme">
-                                <div className="row">
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} md={6} className="no-printme">
+                                <Grid container spacing={2}>
                                     {categorias.map((categoria) => {
                                         if (categoria.tipo === "visivel") {
                                             return (
-                                                <div className="titulo-central col-4" key={categoria.uid}>
-                                                    <h4 className={"titulo-central custrom-font-buttom"}>{categoria.nome}</h4>
+                                                <Grid item xs={6} md={4} key={categoria.uid} sx={{ textAlign: "center" }}>
+                                                    <Typography variant="subtitle1" sx={{ fontWeight: 700, color: "primary.dark" }}>{categoria.nome}</Typography>
                                                     <ToggleButtonGroup
                                                         color="primary"
                                                         orientation="vertical"
                                                         value={produtoID}
-                                                        className="ml-1 custom-botao-tamanho mb-2"
                                                         exclusive
                                                         onChange={this.handleChangeProduto}
                                                         aria-label="Platform"
-                                                        key={categoria.uid}
+                                                        sx={{ width: "100%", mb: 2 }}
                                                     >
                                                         {produtos &&
                                                             produtos.filter(prod => prod.categoria === categoria.uid)
@@ -475,48 +477,44 @@ export default class AddVenda extends Component<Props, State> {
                                                                     return 0;
                                                                 })
                                                                 .map((produto, index) => (
-                                                                    <ToggleButton className={"custom-botao-dentro custrom-font-buttom"}
-                                                                        value={produto.uid} key={index}>{produto.nome}</ToggleButton>
+                                                                    <ToggleButton value={produto.uid} key={index}>{produto.nome}</ToggleButton>
                                                                 ))}
                                                     </ToggleButtonGroup>
-                                                </div>
+                                                </Grid>
                                             )
                                         } else {
                                             return (
-                                                <div className="titulo-central col-4" key={categoria.uid}>
-                                                    <h4 className={"titulo-central " + categoria.uid}>{categoria.nome}</h4>
+                                                <Grid item xs={6} md={4} key={categoria.uid} sx={{ textAlign: "center" }}>
+                                                    <Typography variant="subtitle1" sx={{ fontWeight: 700, color: "primary.dark" }}>{categoria.nome}</Typography>
                                                     <Autocomplete
                                                         disablePortal
                                                         id="combo-box-demo"
-                                                        className="autocomplite-color"
                                                         value={produtoNome}
                                                         onChange={this.handleChangeProdutoOculto}
                                                         options={produtos.filter(prod => prod.categoria === categoria.uid)
                                                             .map((produto) => { return produto.nome })}
                                                         renderInput={(params) => (<TextField {...params} label={categoria.nome} />)}
                                                     />
-                                                </div>
+                                                </Grid>
                                             )
                                         }
                                     }
                                     )}
-                                </div>
+                                </Grid>
                                 {currentItem ? (
                                     <Modal
                                         open={openModel}
                                         onClose={this.handleClose}
                                         aria-labelledby="modal-modal-title"
                                         style={{
-                                            marginTop: '200px',
-                                            marginLeft: '150px',
-                                            marginRight: '74%',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
                                         }}
                                         aria-describedby="modal-modal-description">
-                                        <div className="row pt-2 pb-2 ml-3 mt-3 add-item-color">
-                                            <div className="col-12">
-                                                <h5>Produto: <strong>{currentItem.produto.nome}</strong></h5>
-                                            </div>
-                                            <div className="col-12">
+                                        <Paper sx={{ p: 3, maxWidth: 360, width: "90%" }}>
+                                            <Typography variant="h6">Produto: <strong>{currentItem.produto.nome}</strong></Typography>
+                                            <Box sx={{ mt: 2 }}>
                                                 {!(currentItem.produto.tipoMedida === "Aleatorio") && (
                                                     <div>
                                                         <label>
@@ -579,73 +577,58 @@ export default class AddVenda extends Component<Props, State> {
                                                             {currentItem.valorItem.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
                                                     </div>
                                                 )}
-                                            </div>
-                                            <div className="col-12">
-                                                <button
-                                                    className="btn btn-success mt-3"
-                                                    onClick={this.adicionarItem}
-                                                >
-                                                    Adicionar Item
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </Modal>
-                                ) : (
-                                    <div className="row mt-2">
-                                    </div>
-                                )}
-                            </div>
-                            {itens.length > 0 ? (
-                                <div className="col-6 no-printme">
-                                    <h3 className="titulo-central">Carrinho de compras</h3>
-                                    <ul className="list-group">
-                                        <li className="list-group-item">
-                                            <div className="row">
-                                                <div className="col-4"><strong>Produto</strong></div>
-                                                <div className="col-3 custom-div-valor"><strong>Valor unitario</strong></div>
-                                                <div className="col-2"><strong>Quantidade</strong></div>
-                                                <div className="col-2 custom-div-valor"><strong>Total</strong></div>
-                                                <div className="col-1"></div>
-                                            </div>
-                                        </li>
-                                        {itens.map((item, index) => (
-                                            <li className="list-group-item" key={index}>
-                                                <div className="row">
-                                                    <div className="col-4">{item.produto.nome}</div>
-                                                    <div className="col-3 custom-div-valor">R$ {item.produto.valor.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                                                    <div className="col-2">{item.quantidade.toLocaleString('pt-br', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}</div>
-                                                    <div className="col-2 custom-div-valor">R$ {item.valorItem.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                                                    <div className="col-1"><DeleteIcon onClick={() => this.removeItem(index, item)} /></div>
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                    <div className="mt-1">
-                                        <label>
-                                            <strong>Valor Total da compra:</strong>
-                                        </label><strong>{" R$ "}
-                                            {valorTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-                                    </div>
-                                    <div className="row pt-3">
-                                        <div className="col-md-4">
-                                            <InputLabel id="formaPagamento-select-label" className="custom-select-label">Forma de pagamento</InputLabel>
-                                            <Select
-                                                labelId="formaPagamento-select-label"
-                                                id="formaPagamento"
-                                                value={formaPagamento}
-                                                fullWidth
-                                                label="Forma de pagamento"
-                                                onChange={this.onChangeFormaPagamento}
-                                                required
+                                            </Box>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                sx={{ mt: 3 }}
+                                                onClick={this.adicionarItem}
                                             >
-                                                <MenuItem value={"Dinheiro"}> Dinheiro </MenuItem>
-                                                <MenuItem value={"Debito"}> Debito </MenuItem>
-                                                <MenuItem value={"Credito"}> Credito </MenuItem>
-                                                <MenuItem value={"PIX"}> PIX </MenuItem>
-                                            </Select>
-                                        </div>
+                                                Adicionar Item
+                                            </Button>
+                                        </Paper>
+                                    </Modal>
+                                ) : null}
+                            </Grid>
+                            {itens.length > 0 ? (
+                                <Grid item xs={12} md={6} className="no-printme">
+                                  <Paper elevation={3} sx={{ p: 3, backgroundColor: 'background.paper' }}>
+                                    <Typography variant="h6" sx={{ textAlign: "center" }}>Carrinho de compras</Typography>
+                                    <List>
+                                        {itens.map((item, index) => (
+                                            <ListItem key={index} secondaryAction={<DeleteIcon onClick={() => this.removeItem(index, item)} sx={{ cursor: "pointer" }} />}>
+                                                <ListItemText
+                                                    primary={item.produto.nome}
+                                                    secondary={`Un: R$ ${item.produto.valor.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} · Qtd: ${item.quantidade.toLocaleString('pt-br', { minimumFractionDigits: 4, maximumFractionDigits: 4 })} · Total: R$ ${item.valorItem.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                                                />
+                                            </ListItem>
+                                        ))}
+                                    </List>
+                                    <Typography sx={{ mt: 1 }}>
+                                        <strong>Valor Total da compra: R$ {valorTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+                                    </Typography>
+                                    <Grid container spacing={2} sx={{ pt: 3 }}>
+                                        <Grid item xs={12} md={4}>
+                                            <FormControl fullWidth>
+                                                <InputLabel id="formaPagamento-select-label">Forma de pagamento</InputLabel>
+                                                <Select
+                                                    labelId="formaPagamento-select-label"
+                                                    id="formaPagamento"
+                                                    value={formaPagamento}
+                                                    fullWidth
+                                                    label="Forma de pagamento"
+                                                    onChange={this.onChangeFormaPagamento}
+                                                    required
+                                                >
+                                                    <MenuItem value={"Dinheiro"}> Dinheiro </MenuItem>
+                                                    <MenuItem value={"Debito"}> Debito </MenuItem>
+                                                    <MenuItem value={"Credito"}> Credito </MenuItem>
+                                                    <MenuItem value={"PIX"}> PIX </MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
                                         {formaPagamento === "Dinheiro" ? (
-                                            <div className="col-md-5">
+                                            <Grid item xs={12} md={5}>
                                                 <TextField id="valorPago" label="Valor Pago" variant="outlined"
                                                     type="number"
                                                     value={valorPago}
@@ -658,68 +641,52 @@ export default class AddVenda extends Component<Props, State> {
                                                     required
                                                     helperText="Valor Pago deve ser maior que zero"
                                                 />
-                                            </div>
+                                            </Grid>
                                         ) : (
-                                            <div className="col-md-5">
-                                                <label>
-                                                    <strong>Valor Pago:</strong>
-                                                </label><strong>{" R$ "}
-                                                    {valorPago.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-                                            </div>
+                                            <Grid item xs={12} md={5}>
+                                                <Typography><strong>Valor Pago: R$ {valorPago.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></Typography>
+                                            </Grid>
                                         )}
-                                        <div className="col-md-3">
-                                            <label>
-                                                <strong>Troco:</strong>
-                                            </label><strong>{" R$ "}
-                                                {valorTroco.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-                                        </div>
-                                    </div>
-                                    <div className="row mt-3">
-                                        <div className="col-4">
+                                        <Grid item xs={12} md={3}>
+                                            <Typography><strong>Troco: R$ {valorTroco.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></Typography>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid container spacing={2} sx={{ mt: 1 }} alignItems="center">
+                                        <Grid item xs={12} md={4}>
                                             <TextField id="valorPago" label="Cliente" variant="outlined"
                                                 type="text"
+                                                fullWidth
                                                 value={cliente}
                                                 onChange={this.onChangeCliente}
                                             />
-                                        </div>
-                                        <div className="col-4">
-                                            <button onClick={this.pagamentoPendente} className="btn btn-warning mt-3">
-                                                Pagamento pendente
-                                            </button>
-                                        </div>
-                                        <div className="col-4">
-                                            <button onClick={this.finalizarVenda} className="btn btn-success mt-3">
-                                                Finalizar Compra
-                                            </button>
-                                        </div>
-                                        <div className="col-4">
-                                            <button onClick={this.imprimir} className="btn btn-success mt-3">
-                                                Imprimir
-                                            </button>
-                                        </div>
-
-                                    </div>
-                                </div>
+                                        </Grid>
+                                        <Grid item xs={12} md={8}>
+                                            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5 }}>
+                                                <Button onClick={this.pagamentoPendente} variant="outlined" color="secondary" size="medium">
+                                                    Pagamento pendente
+                                                </Button>
+                                                <Button onClick={this.finalizarVenda} variant="contained" color="primary" size="medium">
+                                                    Finalizar Compra
+                                                </Button>
+                                                <Button onClick={this.imprimir} variant="contained" color="primary" size="medium">
+                                                    Imprimir
+                                                </Button>
+                                            </Box>
+                                        </Grid>
+                                    </Grid>
+                                  </Paper>
+                                </Grid>
                             ) : (
-                                <div className="col-6">
-                                    <h4 className="titulo-central">Carrinho de compras</h4>
-                                    <ul className="list-group">
-                                        <li className="list-group-item">
-                                            <div className="row">
-                                                <div className="col-4"><strong>Produto</strong></div>
-                                                <div className="col-3 custom-div-valor"><strong>Valor unitario</strong></div>
-                                                <div className="col-2"><strong>Quantidade</strong></div>
-                                                <div className="col-2 custom-div-valor"><strong>Total</strong></div>
-                                                <div className="col-1"></div>
-                                            </div>
-                                        </li>
-                                        <li className="list-group-item">
-                                            <div className="row">
-                                                <div className="col-4">Sem itens adicionados</div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
+                                <Grid item xs={12} md={6}>
+                                  <Paper elevation={3} sx={{ p: 3, backgroundColor: 'background.paper' }}>
+                                    <Typography variant="h6" sx={{ textAlign: "center" }}>Carrinho de compras</Typography>
+                                    <List>
+                                        <ListItem>
+                                            <ListItemText primary="Sem itens adicionados" />
+                                        </ListItem>
+                                    </List>
+                                  </Paper>
+                                </Grid>
                             )}
                             <div className="printme">
                                 <img src={logo} alt={"logo"} style={{ width: '100%' }} />
@@ -755,38 +722,29 @@ export default class AddVenda extends Component<Props, State> {
                                 </div>
                             </div>
                             {vendasEmAberto.length > 0 && (
-                                <div className="col-8">
-                                    <h4 className="titulo-central">Pagamentos Pendentes</h4>
-                                    <ul className="list-group">
-                                        <li className="list-group-item">
-                                            <div className="row">
-                                                <div className="col-4"><strong>Cliente</strong></div>
-                                                <div className="col-2"><strong>Itens</strong></div>
-                                                <div className="col-3 custom-div-valor"><strong>Valor Total</strong></div>
-                                                <div className="col-2 custom-div-valor"><strong>Valor Pago</strong></div>
-                                            </div>
-                                        </li>
+                                <Grid item xs={12}>
+                                    <Typography variant="h6" sx={{ textAlign: "center" }}>Pagamentos Pendentes</Typography>
+                                    <List component={Paper}>
                                         {vendasEmAberto.map((venda, index) => (
-                                            <li className="list-group-item"
+                                            <ListItem
+                                                button
                                                 onClick={() => this.setActiveVenda(venda, index)}
-                                                key={index}>
-                                                <div className="row">
-                                                    <div className="col-4">{venda.cliente}</div>
-                                                    <div className="col-2">{venda.itens.length.toLocaleString('pt-br', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}</div>
-                                                    <div className="col-3 custom-div-valor">R$ {venda.valorTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                                                    <div className="col-2 custom-div-valor">R$ {venda.valorPago.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-
-                                                </div>
-                                            </li>
+                                                key={index}
+                                            >
+                                                <ListItemText
+                                                    primary={venda.cliente}
+                                                    secondary={`Itens: ${venda.itens.length.toLocaleString('pt-br', { minimumFractionDigits: 4, maximumFractionDigits: 4 })} · Total: R$ ${venda.valorTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} · Pago: R$ ${venda.valorPago.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                                                />
+                                            </ListItem>
                                         ))}
-                                    </ul>
-                                </div>
+                                    </List>
+                                </Grid>
                             )}
-                        </div>
+                        </Grid>
                     ) : (
-                        <div className="row">
+                        <Typography sx={{ p: 2 }}>
                             Necessário abrir o caixa para efetuar vendas!
-                        </div>
+                        </Typography>
                     )}
 
                 </FormControl>

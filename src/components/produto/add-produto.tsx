@@ -2,9 +2,13 @@ import { Component, ChangeEvent } from "react";
 import { Link } from "react-router-dom";
 import ProdutoService from "../../services/produto.service";
 import ProdutoDTO from "../../types/produto.type";
-import { Select, MenuItem, SelectChangeEvent } from "@mui/material";
+import {
+  Select, MenuItem, SelectChangeEvent,
+  Box, Button, FormControl, Grid, InputLabel, Paper, TextField, Typography,
+} from "@mui/material";
 import CategoriaDTO from "../../types/categoria.type";
 import CategoriaService from "../../services/categoria.service";
+import PageHeader from "../shell/PageHeader";
 
 type Props = {};
 
@@ -121,91 +125,94 @@ export default class AddProduto extends Component<Props, State> {
         const { submitted, uid, nome, valor, tipoMedida, categoria, categorias } = this.state;
 
         return (
-            <div className="submit-form">
-                <h2>Cadastrar produto</h2>
-                {submitted ? (
-                    <div>
-                        <h4>Produto enviado com sucesso!</h4>
-                        <button className="btn btn-success" onClick={this.newProduto}>
-                            Voltar
-                        </button>
-                    </div>
-                ) : (
-                    <div>
-                        <div className="form-group">
-                            <label htmlFor="uid">Identificador</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="uid"
-                                required
-                                value={uid}
-                                onChange={this.onChangeUid}
-                                name="uid"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="nome">Nome</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="nome"
-                                required
-                                value={nome}
-                                onChange={this.onChangeNome}
-                                name="nome"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="valor">Valor</label>
-                            <input
-                                type="number"
-                                className="form-control"
-                                id="valor"
-                                required
-                                value={valor}
-                                onChange={this.onChangeValor}
-                                name="valor"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="tipo">Tipo de Medida</label>
-                            <Select
-                                id="tipo"
-                                className="form-control"
-                                value={tipoMedida}
-                                onChange={this.onChangeTipoMedida}
-                            >
-                                <MenuItem value={"Unidade"}>Unidade</MenuItem>
-                                <MenuItem value={"Kilograma"}>Kilograma</MenuItem>
-                                <MenuItem value={"Aleatorio"}>Aleatório</MenuItem>
-                            </Select>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="categoria">Categoria</label>
-                            <Select
-                                id="categoria"
-                                className="form-control"
-                                value={categoria}
-                                label="Categoria"
-                                onChange={this.onChangeCategoria}
-                            >
-                                {categorias.map((cat) => (
-                                    <MenuItem value={cat.uid}>{cat.nome}</MenuItem>
-                                ))}
-                            </Select>
-                        </div>
-                        <Link
-                            to={"/list_produto/"}
-                            className="badge badge-danger mr-2">
-                            Voltar
-                        </Link>
-                        <button onClick={this.saveProduto} className="btn btn-success">
-                            Salvar
-                        </button>
-                    </div>
-
-                )}
+            <div>
+                <PageHeader title="Cadastrar produto" />
+                <Paper sx={{ p: 3, maxWidth: 500 }}>
+                    {submitted ? (
+                        <Box>
+                            <Typography variant="h6" sx={{ mb: 2 }}>Produto enviado com sucesso!</Typography>
+                            <Button variant="contained" color="primary" onClick={this.newProduto}>
+                                Voltar
+                            </Button>
+                        </Box>
+                    ) : (
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Identificador"
+                                    required
+                                    value={uid}
+                                    onChange={this.onChangeUid}
+                                    name="uid"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Nome"
+                                    required
+                                    value={nome}
+                                    onChange={this.onChangeNome}
+                                    name="nome"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Valor"
+                                    type="number"
+                                    required
+                                    value={valor}
+                                    onChange={this.onChangeValor}
+                                    name="valor"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="tipo-select-label">Tipo de Medida</InputLabel>
+                                    <Select
+                                        labelId="tipo-select-label"
+                                        id="tipo"
+                                        label="Tipo de Medida"
+                                        value={tipoMedida}
+                                        onChange={this.onChangeTipoMedida}
+                                    >
+                                        <MenuItem value={"Unidade"}>Unidade</MenuItem>
+                                        <MenuItem value={"Kilograma"}>Kilograma</MenuItem>
+                                        <MenuItem value={"Aleatorio"}>Aleatório</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="categoria-select-label">Categoria</InputLabel>
+                                    <Select
+                                        labelId="categoria-select-label"
+                                        id="categoria"
+                                        value={categoria}
+                                        label="Categoria"
+                                        onChange={this.onChangeCategoria}
+                                    >
+                                        {categorias.map((cat) => (
+                                            <MenuItem value={cat.uid} key={cat.uid}>{cat.nome}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Box sx={{ display: "flex", gap: 1.5 }}>
+                                    <Button component={Link} to={"/list_produto/"} variant="outlined" color="secondary">
+                                        Voltar
+                                    </Button>
+                                    <Button onClick={this.saveProduto} variant="contained" color="primary">
+                                        Salvar
+                                    </Button>
+                                </Box>
+                            </Grid>
+                        </Grid>
+                    )}
+                </Paper>
             </div>
         );
     }

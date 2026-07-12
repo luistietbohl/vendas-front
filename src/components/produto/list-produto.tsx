@@ -4,7 +4,25 @@ import FilterProdutoDTO from "../../types/produto-filter.type";
 import ProdutoDTO from "../../types/produto.type";
 import { Link } from "react-router-dom";
 import Pagination from '@mui/material/Pagination'
-import { Select , MenuItem, SelectChangeEvent } from "@mui/material";
+import {
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+  Button,
+  FormControl,
+  Grid,
+  InputLabel,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from "@mui/material";
+import PageHeader from "../shell/PageHeader";
 
 type Props = {};
 
@@ -123,57 +141,62 @@ export default class ProdutoList extends Component<Props, State> {
         } = this.state;
     
         return (
-            <div className="row">
-              <div className="col-6">
-                <h4>Produtos</h4>
-              </div>
-              <div className="col-6">
-                <div className="mb-3">
-                    <Link
-                        to={"/add_produto/"}
-                        className="btn btn-success">
-                        Adicionar novo produto
-                    </Link>
-                  </div>
-              </div>
-              <div className="col-8">
-                <div className="input-group mb-3">
-                  <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Pesquisar por nome"
-                  value={searchNome}
-                  onChange={this.onChangeSearchNome}
-                  />
-                  <div className="input-group-append">
-                    <button
-                        className="btn btn-outline-secondary"
-                        type="button"
-                        onClick={this.retrieveProdutos} >
+            <div>
+              <PageHeader
+                title="Produtos"
+                action={
+                  <Button
+                    component={Link}
+                    to={"/add_produto/"}
+                    variant="contained"
+                    color="primary"
+                  >
+                    Adicionar novo produto
+                  </Button>
+                }
+              />
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={7}>
+                  <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                    <Grid item xs={12} sm={7}>
+                      <TextField
+                        fullWidth
+                        label="Pesquisar por nome"
+                        variant="outlined"
+                        size="small"
+                        value={searchNome}
+                        onChange={this.onChangeSearchNome}
+                      />
+                    </Grid>
+                    <Grid item xs={6} sm={2}>
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        fullWidth
+                        onClick={this.retrieveProdutos}
+                      >
                         Pesquisar
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div className="col-4">
-                <div>
-                    {"Quantidade por pagina: "}
-                      <Select
-                          labelId="demo-simple-select-label"
+                      </Button>
+                    </Grid>
+                    <Grid item xs={6} sm={3}>
+                      <FormControl fullWidth size="small">
+                        <InputLabel id="pageSize-select-label">Quantidade por página</InputLabel>
+                        <Select
+                          labelId="pageSize-select-label"
                           id="pageSize"
                           value={pageSize}
-                          label="Quantidade por pagina"
-                          onChange={this.handlePageSizeChange} >
+                          label="Quantidade por página"
+                          onChange={this.handlePageSizeChange}
+                        >
                           <MenuItem value={1}>1</MenuItem>
                           <MenuItem value={5}>5</MenuItem>
                           <MenuItem value={10}>10</MenuItem>
-                      </Select>
-                </div>
-              </div>
-              <div className="col-8">
-                <div className="mt-3">
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
                   <Pagination
-                    className="my-3"
+                    className="mb-3"
                     count={count}
                     page={page}
                     siblingCount={1}
@@ -182,56 +205,59 @@ export default class ProdutoList extends Component<Props, State> {
                     shape="rounded"
                     onChange={this.handlePageChange}
                   />
-                </div>
-              </div>
-              <div className="col-8">
-                <ul className="list-group">
-                    {produtos &&
-                    produtos.map((produto, index) => (
-                        <li
-                        className={
-                            "list-group-item " +
-                            (index === currentIndex ? "active" : "")
-                        }
-                        onClick={() => this.setActiveProduto(produto, index)}
-                        key={index}
-                        >
-                          <div className="row">
-                            <div className="col-4">{produto.nome}</div>
-                            <div className="col-4">{produto.categoria}</div>
-                            <div className="col-4 custom-div-valor">R$ {produto.valor.toLocaleString('pt-br', {minimumFractionDigits: 2})}</div>
-                          </div>
-                        </li>
-                      ))}
-                </ul>
-
-                
-                </div>
-                <div className="col-4">
-                {currentProduto ? (
-                    <div>
-                    <h4>Produto</h4>
-                    <div>
-                        <label>
-                        <strong>Nome:</strong>
-                        </label>{" "}
-                        {currentProduto.nome}
-                    </div>
-                    
-                    <Link
+                  <TableContainer component={Paper}>
+                    <Table size="small" aria-label="lista de produtos">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Nome</TableCell>
+                          <TableCell>Categoria</TableCell>
+                          <TableCell align="right">Valor</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {produtos &&
+                          produtos.map((produto, index) => (
+                            <TableRow
+                              hover
+                              selected={index === currentIndex}
+                              onClick={() => this.setActiveProduto(produto, index)}
+                              key={index}
+                              sx={{ '&:last-child td, &:last-child th': { border: 0 }, cursor: "pointer" }}
+                            >
+                              <TableCell component="th" scope="row">
+                                <Typography fontWeight={700}>{produto.nome}</Typography>
+                              </TableCell>
+                              <TableCell>{produto.categoria}</TableCell>
+                              <TableCell align="right">
+                                R$ {produto.valor.toLocaleString('pt-br', { minimumFractionDigits: 2 })}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Grid>
+                <Grid item xs={12} md={5}>
+                  {currentProduto ? (
+                    <Paper sx={{ p: 3 }}>
+                      <Typography variant="h6" sx={{ mb: 2 }}>Produto</Typography>
+                      <Typography sx={{ mb: 2 }}>
+                        <strong>Nome:</strong> {currentProduto.nome}
+                      </Typography>
+                      <Button
+                        component={Link}
                         to={"/list_produto/" + currentProduto.uid}
-                        className="badge badge-warning"
-                    >
-                        Edit
-                    </Link>
-                    </div>
-                ) : (
-                    <div>
-                    <br />
-                    <p>Selecione um produto...</p>
-                    </div>
-                )}
-                </div>
+                        variant="outlined"
+                        color="secondary"
+                      >
+                        Editar
+                      </Button>
+                    </Paper>
+                  ) : (
+                    <Typography sx={{ p: 2 }}>Selecione um produto...</Typography>
+                  )}
+                </Grid>
+              </Grid>
             </div>
         );
     }
