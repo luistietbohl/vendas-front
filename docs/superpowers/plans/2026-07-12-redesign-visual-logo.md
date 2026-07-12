@@ -616,12 +616,13 @@ reportWebVitals();
 
 - [ ] **Step 2: Replace the inline Bootstrap navbar in `App.tsx` with `AppShell`**
 
-Modify `src/App.tsx` — replace the top imports (remove the Bootstrap CSS import and `App.css` import, remove `Link` since it's no longer used directly here, add `Box` and `AppShell`):
+Modify `src/App.tsx` — replace the top imports (remove the Bootstrap CSS import, remove `Link` since it's no longer used directly here, add `Box` and `AppShell`; **keep the `./App.css` import** — `add-venda.tsx`'s print feature in Task 7 depends on its `.printme`/`.no-printme` rules and nothing else in the app imports that file):
 
 ```tsx
 import { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 import { Box } from "@mui/material";
+import "./App.css";
 
 import AppShell from "./components/shell/AppShell";
 import AddProduto from "./components/produto/add-produto";
