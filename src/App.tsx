@@ -1,6 +1,7 @@
 import { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 import { Box } from "@mui/material";
+import "./App.css";
 
 import AppShell from "./components/shell/AppShell";
 import AddProduto from "./components/produto/add-produto";
