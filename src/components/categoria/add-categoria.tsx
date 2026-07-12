@@ -1,8 +1,12 @@
 import { Component, ChangeEvent } from "react";
 import { Link } from "react-router-dom";
 import CategoriaService from "../../services/categoria.service";
-import { Select, MenuItem, SelectChangeEvent } from "@mui/material";
+import {
+  Select, MenuItem, SelectChangeEvent,
+  Box, Button, FormControl, Grid, InputLabel, Paper, TextField, Typography,
+} from "@mui/material";
 import CategoriaDTO from "../../types/categoria.type";
+import PageHeader from "../shell/PageHeader";
 
 type Props = {};
 
@@ -88,77 +92,77 @@ export default class AddCategoria extends Component<Props, State> {
         const { submitted, uid, nome, ordem, tipo } = this.state;
 
         return (
-            <div className="submit-form">
-                <h2>Cadastrar Categoria</h2>
-                {submitted ? (
-                    <div>
-                        <h4>Categoria enviado com sucesso!</h4>
-                        <button className="btn btn-success" onClick={this.newCategoria}>
-                            Voltar
-                        </button>
-                    </div>
-                ) : (
-                    <div>
-                        <div className="form-group">
-                            <label htmlFor="uid">Identificador</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="uid"
-                                required
-                                value={uid}
-                                onChange={this.onChangeUid}
-                                name="uid"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="nome">Nome</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="nome"
-                                required
-                                value={nome}
-                                onChange={this.onChangeNome}
-                                name="nome"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="ordem">Ordem</label>
-                            <input
-                                type="number"
-                                className="form-control"
-                                id="ordem"
-                                required
-                                value={ordem}
-                                onChange={this.onChangeOrdem}
-                                name="ordem"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="tipo">Tipo</label>
-                            <Select
-                                id="tipo"
-                                className="form-control"
-                                value={tipo}
-                                onChange={this.onChangeTipo}
-                            >
-                                <MenuItem value={"visivel"}>Visivel</MenuItem>
-                                <MenuItem value={"oculto"}>Oculto</MenuItem>
-                            </Select>
-                        </div>
-
-                        <Link
-                            to={"/list_categoria/"}
-                            className="badge badge-danger mr-2">
-                            Voltar
-                        </Link>
-                        <button onClick={this.saveCategoria} className="btn btn-success">
-                            Salvar
-                        </button>
-                    </div>
-
-                )}
+            <div>
+                <PageHeader title="Cadastrar Categoria" />
+                <Paper sx={{ p: 3, maxWidth: 500 }}>
+                    {submitted ? (
+                        <Box>
+                            <Typography variant="h6" sx={{ mb: 2 }}>Categoria enviado com sucesso!</Typography>
+                            <Button variant="contained" color="primary" onClick={this.newCategoria}>
+                                Voltar
+                            </Button>
+                        </Box>
+                    ) : (
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Identificador"
+                                    required
+                                    value={uid}
+                                    onChange={this.onChangeUid}
+                                    name="uid"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Nome"
+                                    required
+                                    value={nome}
+                                    onChange={this.onChangeNome}
+                                    name="nome"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Ordem"
+                                    type="number"
+                                    required
+                                    value={ordem}
+                                    onChange={this.onChangeOrdem}
+                                    name="ordem"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="tipo-select-label">Tipo</InputLabel>
+                                    <Select
+                                        labelId="tipo-select-label"
+                                        id="tipo"
+                                        label="Tipo"
+                                        value={tipo}
+                                        onChange={this.onChangeTipo}
+                                    >
+                                        <MenuItem value={"visivel"}>Visivel</MenuItem>
+                                        <MenuItem value={"oculto"}>Oculto</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Box sx={{ display: "flex", gap: 1.5 }}>
+                                    <Button component={Link} to={"/list_categoria/"} variant="outlined" color="secondary">
+                                        Voltar
+                                    </Button>
+                                    <Button onClick={this.saveCategoria} variant="contained" color="primary">
+                                        Salvar
+                                    </Button>
+                                </Box>
+                            </Grid>
+                        </Grid>
+                    )}
+                </Paper>
             </div>
         );
     }

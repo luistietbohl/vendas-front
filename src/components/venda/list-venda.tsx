@@ -8,7 +8,9 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import 'dayjs/locale/en-gb';
 import moment from "moment";
-import { InputAdornment, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
+import { InputAdornment, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Button } from "@mui/material";
+import PageHeader from "../shell/PageHeader";
+import { Grid, Typography } from "@mui/material";
 
 type Props = {};
 
@@ -183,198 +185,177 @@ export default class VendaList extends Component<Props, State> {
     } = this.state;
 
     return (
-      <div className="row">
-        <div className="col-4">
-          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'en-gb'}>
-            <DateTimePicker
-              label="Data de inicio"
-              value={start}
-              onChange={(newValue) => this.onChangeStart(newValue)}
-            />
-          </LocalizationProvider>
-        </div>
-        <div className="col-4">
-          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'en-gb'}>
-            <DateTimePicker
-              label="Data de termino"
-              value={end}
-              onChange={(newValue) => this.onChangeEnd(newValue)}
-            />
-          </LocalizationProvider>
-        </div>
-        <div className="col-4">
-        </div>
-        <div className="col-7 mt-3">
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Data da venda</TableCell>
-                  <TableCell align="right">Itens</TableCell>
-                  <TableCell>Forma de pagamento</TableCell>
-                  <TableCell align="right">Valor Total</TableCell>
-                  <TableCell align="right">Valor Pago</TableCell>
-                  <TableCell align="right">Valor Troco</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {vendas.map((venda) => (
-                  <TableRow
-                    onClick={() => this.setActiveVenda(venda)}
-                    key={venda.uid}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {new Date(venda.create).toLocaleString()}
-                    </TableCell>
-                    <TableCell align="right">{venda.itens.length}</TableCell>
-                    <TableCell>{venda.formaPagamento}</TableCell>
-                    <TableCell align="right">{venda.valorTotal ?
-                      'R$ ' + venda.valorTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}</TableCell>
-                    <TableCell align="right">{venda.valorPago ?
-                      'R$ ' + venda.valorPago.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}</TableCell>
-                    <TableCell align="right">{venda.valorTroco ?
-                      'R$ ' + venda.valorTroco.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
-        {currentVenda ? (
-          <div className="col-5">
-            <h5>Venda</h5>
-            <label>ID: {currentVenda.uid}</label><br />
-            <label>Cliente: {currentVenda.cliente}</label><br />
-            <label>Data: {new Date(currentVenda.create).toLocaleString()}</label><br />
-            <label>Itens: {currentVenda.itens.length}</label><br />
+      <div>
+        <PageHeader title="Lista de Vendas" />
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={4}>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'en-gb'}>
+              <DateTimePicker
+                label="Data de inicio"
+                value={start}
+                onChange={(newValue) => this.onChangeStart(newValue)}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'en-gb'}>
+              <DateTimePicker
+                label="Data de termino"
+                value={end}
+                onChange={(newValue) => this.onChangeEnd(newValue)}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid item xs={12} md={7}>
             <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 350 }} size="small" aria-label="a dense table">
+              <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Produto</TableCell>
-                    <TableCell>Categoria</TableCell>
-                    <TableCell>Valor unitario</TableCell>
-                    <TableCell>Quantidade</TableCell>
-                    <TableCell>Total</TableCell>
+                    <TableCell>Data da venda</TableCell>
+                    <TableCell align="right">Itens</TableCell>
+                    <TableCell>Forma de pagamento</TableCell>
+                    <TableCell align="right">Valor Total</TableCell>
+                    <TableCell align="right">Valor Pago</TableCell>
+                    <TableCell align="right">Valor Troco</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {currentVenda.itens.map((item, index) => (
+                  {vendas.map((venda) => (
                     <TableRow
-                      key={index}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      onClick={() => this.setActiveVenda(venda)}
+                      key={venda.uid}
+                      sx={{ '&:last-child td, &:last-child th': { border: 0 }, cursor: "pointer" }}
                     >
-                      <TableCell>{item.produto.nome}</TableCell>
-                      <TableCell>{item.produto.categoria}</TableCell>
-                      <TableCell>R$ {item.produto.valor.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                      <TableCell>{item.quantidade}</TableCell>
-                      <TableCell>R$ {item.valorItem.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                      <TableCell component="th" scope="row">
+                        {new Date(venda.create).toLocaleString()}
+                      </TableCell>
+                      <TableCell align="right">{venda.itens.length}</TableCell>
+                      <TableCell>{venda.formaPagamento}</TableCell>
+                      <TableCell align="right">{venda.valorTotal ?
+                        'R$ ' + venda.valorTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}</TableCell>
+                      <TableCell align="right">{venda.valorPago ?
+                        'R$ ' + venda.valorPago.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}</TableCell>
+                      <TableCell align="right">{venda.valorTroco ?
+                        'R$ ' + venda.valorTroco.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </TableContainer>
+          </Grid>
+          {currentVenda ? (
+            <Grid item xs={12} md={5}>
+              <Typography variant="h6">Venda</Typography>
+              <Typography>ID: {currentVenda.uid}</Typography>
+              <Typography>Cliente: {currentVenda.cliente}</Typography>
+              <Typography>Data: {new Date(currentVenda.create).toLocaleString()}</Typography>
+              <Typography sx={{ mb: 1 }}>Itens: {currentVenda.itens.length}</Typography>
+              <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 350 }} size="small" aria-label="a dense table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Produto</TableCell>
+                      <TableCell>Categoria</TableCell>
+                      <TableCell>Valor unitario</TableCell>
+                      <TableCell>Quantidade</TableCell>
+                      <TableCell>Total</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {currentVenda.itens.map((item, index) => (
+                      <TableRow
+                        key={index}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      >
+                        <TableCell>{item.produto.nome}</TableCell>
+                        <TableCell>{item.produto.categoria}</TableCell>
+                        <TableCell>R$ {item.produto.valor.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                        <TableCell>{item.quantidade}</TableCell>
+                        <TableCell>R$ {item.valorItem.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
 
-            <InputLabel id="formaPagamento-select-label" className="custom-select-label">Forma de pagamento</InputLabel>
-            <Select
-              labelId="formaPagamento-select-label"
-              id="formaPagamento"
-              value={currentVenda.formaPagamento}
-              fullWidth
-              label="Forma de pagamento"
-              onChange={this.onChangeFormaPagamento}
-            >
-              <MenuItem value={"Dinheiro"}> Dinheiro </MenuItem>
-              <MenuItem value={"Debito"}> Debito </MenuItem>
-              <MenuItem value={"Credito"}> Credito </MenuItem>
-              <MenuItem value={"PIX"}> PIX </MenuItem>
-            </Select>
-            <br />
+              <InputLabel id="formaPagamento-select-label" sx={{ mt: 2 }}>Forma de pagamento</InputLabel>
+              <Select
+                labelId="formaPagamento-select-label"
+                id="formaPagamento"
+                value={currentVenda.formaPagamento}
+                fullWidth
+                label="Forma de pagamento"
+                onChange={this.onChangeFormaPagamento}
+              >
+                <MenuItem value={"Dinheiro"}> Dinheiro </MenuItem>
+                <MenuItem value={"Debito"}> Debito </MenuItem>
+                <MenuItem value={"Credito"}> Credito </MenuItem>
+                <MenuItem value={"PIX"}> PIX </MenuItem>
+              </Select>
 
-            <label>Total: {currentVenda.valorTotal ?
-              'R$ ' + currentVenda.valorTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}</label><br />
+              <Typography sx={{ mt: 2 }}>Total: {currentVenda.valorTotal ?
+                'R$ ' + currentVenda.valorTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}</Typography>
 
-            <TextField id="valorPago" label="Valor Pago" variant="outlined"
-              type="number"
-              value={currentVenda.valorPago}
-              onChange={this.onChangeValorPago}
-              autoFocus
-              InputProps={{
-                startAdornment: <InputAdornment position="start">R$</InputAdornment>,
-              }}
-              required
-              helperText="Valor Pago deve ser maior que zero"
-            /><br />
-            <label>Troco: {currentVenda.valorTroco ?
-              'R$ ' + currentVenda.valorTroco.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}</label><br />
+              <TextField id="valorPago" label="Valor Pago" variant="outlined"
+                type="number"
+                fullWidth
+                sx={{ mt: 2 }}
+                value={currentVenda.valorPago}
+                onChange={this.onChangeValorPago}
+                autoFocus
+                InputProps={{
+                  startAdornment: <InputAdornment position="start">R$</InputAdornment>,
+                }}
+                required
+                helperText="Valor Pago deve ser maior que zero"
+              />
+              <Typography sx={{ mt: 2 }}>Troco: {currentVenda.valorTroco ?
+                'R$ ' + currentVenda.valorTroco.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}</Typography>
 
-            <button
-              className="badge badge-danger mr-2"
-              onClick={this.deleteVenda}
-            >
-              Remover
-            </button>
-
-            <button
-              type="submit"
-              className="btn btn-success"
-              onClick={this.updateVenda}
-            >
-              Atualizar
-            </button>
-          </div>
-        ) : (
-          <div className="col-5">
-
-          </div>
-        )}
-        <div className="row col-12 mt-3">
-          <div className="col-4">
-            <label>
-              <strong>Total valor Vendas:</strong>
-            </label><strong>{" R$ "}
-              {valorSunTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-          </div>
-          <div className="col-4">
-            <label>
-              <strong>Total valor pago:</strong>
-            </label><strong>{" R$ "}
-              {valorSunPago.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-          </div>
-          <div className="col-4">
-            <label>
-              <strong>Total valor troco:</strong>
-            </label><strong>{" R$ "}
-              {valorSunTroco.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-          </div>
-        </div>
-        <div className="row col-12 mt-3">
-          <div className="col-3">
-            <label>
-              <strong>Total PIX:</strong>
-            </label><strong>{" R$ "}
-              {valorPIXTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-          </div>
-          <div className="col-3">
-            <label>
-              <strong>Total Debito:</strong>
-            </label><strong>{" R$ "}
-              {valorDebitoTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-          </div>
-          <div className="col-3">
-            <label>
-              <strong>Total Credito:</strong>
-            </label><strong>{" R$ "}
-              {valorCreditoTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-          </div>
-          <div className="col-3">
-            <label>
-              <strong>Total Dinheiro:</strong>
-            </label><strong>{" R$ "}
-              {valorDinheiroTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-          </div>
-        </div>
+              <Grid container spacing={1} sx={{ mt: 1 }}>
+                <Grid item xs={6}>
+                  <Button variant="outlined" color="error" fullWidth onClick={this.deleteVenda}>
+                    Remover
+                  </Button>
+                </Grid>
+                <Grid item xs={6}>
+                  <Button type="submit" variant="contained" color="primary" fullWidth onClick={this.updateVenda}>
+                    Atualizar
+                  </Button>
+                </Grid>
+              </Grid>
+            </Grid>
+          ) : null}
+          <Grid item xs={12}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={4}>
+                <Typography><strong>Total valor Vendas: R$ {valorSunTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></Typography>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Typography><strong>Total valor pago: R$ {valorSunPago.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></Typography>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Typography><strong>Total valor troco: R$ {valorSunTroco.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item xs={12}>
+            <Grid container spacing={2}>
+              <Grid item xs={6} md={3}>
+                <Typography><strong>Total PIX: R$ {valorPIXTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></Typography>
+              </Grid>
+              <Grid item xs={6} md={3}>
+                <Typography><strong>Total Debito: R$ {valorDebitoTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></Typography>
+              </Grid>
+              <Grid item xs={6} md={3}>
+                <Typography><strong>Total Credito: R$ {valorCreditoTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></Typography>
+              </Grid>
+              <Grid item xs={6} md={3}>
+                <Typography><strong>Total Dinheiro: R$ {valorDinheiroTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
       </div>
     )
   }

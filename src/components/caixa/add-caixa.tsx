@@ -7,9 +7,14 @@ import FormControl from "@mui/material/FormControl/FormControl";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import caixaService from "../../services/caixa.service";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { TextField, InputAdornment, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, InputLabel, Select, MenuItem, SelectChangeEvent, Collapse, Alert } from "@mui/material";
+import {
+  TextField, InputAdornment, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
+  InputLabel, Select, MenuItem, SelectChangeEvent, Collapse, Alert,
+  Box, Button, Grid, Typography,
+} from "@mui/material";
 import VendaDTO from "../../types/venda.type";
 import LancamentoDTO from "../../types/lancamento.type";
+import PageHeader from "../shell/PageHeader";
 
 type Props = {};
 
@@ -299,6 +304,7 @@ export default class AddCaixa extends Component<Props, State> {
 
         return (
             <div>
+                <PageHeader title="Caixa" />
                 <FormControl fullWidth>
                     <Collapse in={openLancamentoSucess} addEndListener={this.finalizaAlert}>
                         <Alert severity="success" color="success">
@@ -306,58 +312,66 @@ export default class AddCaixa extends Component<Props, State> {
                         </Alert>
                     </Collapse>
                     {uid ? (
-                        <div className="row">
-                            <h4 className="titulo-central">Lançamentos no Caixa</h4>
-                            <div className="row col-12">
-                                <div className="col-3">
-                                    <TextField id="descricaoLancamento" label="Descrição" variant="outlined"
-                                        type="text"
-                                        sx={{ width: 'inherit' }}
-                                        value={descricaoLancamento}
-                                        onChange={this.onChangeDescricaoLancamento}
-                                    />
-                                </div>
-                                <div className="col-2">
-                                    <TextField id="userLancamento" label="Usuário" variant="outlined"
-                                        type="text"
-                                        value={userLancamento}
-                                        onChange={this.onChangeUserLancamento}
-                                    />
-                                </div>
-                                <div className="col-2">
-                                    <InputLabel id="formaPagamento-select-label" className="custom-select-label">Tipo de Lançamento</InputLabel>
-                                    <Select
-                                        labelId="formaPagamento-select-label"
-                                        id="formaPagamento"
-                                        value={tipoLancamento}
-                                        fullWidth
-                                        label="Tipo de Lançamento"
-                                        onChange={this.onChangeTipoLancamento}
-                                    >
-                                        <MenuItem value={"Credito"}>Adicionar</MenuItem>
-                                        <MenuItem value={"Debito"}>Retirar</MenuItem>
-                                    </Select>
-                                </div>
-                                <div className="col-2">
-                                    <TextField id="valor" label="Valor" variant="outlined"
-                                        type="number"
-                                        value={valorLancamento}
-                                        onChange={this.onChangeValorLancamento}
-                                        autoFocus
-                                        InputProps={{
-                                            startAdornment: <InputAdornment position="start">R$</InputAdornment>,
-                                        }}
-                                    />
-                                </div>
-                                <div className="col-3">
-                                    <button onClick={this.adicionarLancamento} className="btn btn-success mt-3">
-                                        Adicionar Lançamento
-                                    </button>
-                                </div>
-                            </div>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <Typography variant="h6" sx={{ textAlign: "center" }}>Lançamentos no Caixa</Typography>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Grid container spacing={2} alignItems="flex-end">
+                                    <Grid item xs={12} sm={3}>
+                                        <TextField id="descricaoLancamento" label="Descrição" variant="outlined"
+                                            type="text"
+                                            fullWidth
+                                            value={descricaoLancamento}
+                                            onChange={this.onChangeDescricaoLancamento}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6} sm={2}>
+                                        <TextField id="userLancamento" label="Usuário" variant="outlined"
+                                            type="text"
+                                            fullWidth
+                                            value={userLancamento}
+                                            onChange={this.onChangeUserLancamento}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6} sm={2}>
+                                        <FormControl fullWidth>
+                                            <InputLabel id="tipoLancamento-select-label">Tipo de Lançamento</InputLabel>
+                                            <Select
+                                                labelId="tipoLancamento-select-label"
+                                                id="tipoLancamento"
+                                                value={tipoLancamento}
+                                                fullWidth
+                                                label="Tipo de Lançamento"
+                                                onChange={this.onChangeTipoLancamento}
+                                            >
+                                                <MenuItem value={"Credito"}>Adicionar</MenuItem>
+                                                <MenuItem value={"Debito"}>Retirar</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={6} sm={2}>
+                                        <TextField id="valor" label="Valor" variant="outlined"
+                                            type="number"
+                                            fullWidth
+                                            value={valorLancamento}
+                                            onChange={this.onChangeValorLancamento}
+                                            autoFocus
+                                            InputProps={{
+                                                startAdornment: <InputAdornment position="start">R$</InputAdornment>,
+                                            }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6} sm={3}>
+                                        <Button onClick={this.adicionarLancamento} variant="contained" color="primary">
+                                            Adicionar Lançamento
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
 
-                            <div className="col-7 mt-3">
-                                <h4 className="titulo-central">Vendas efetuadas</h4>
+                            <Grid item xs={12} md={7}>
+                                <Typography variant="h6" sx={{ textAlign: "center", mb: 1 }}>Vendas efetuadas</Typography>
                                 <TableContainer component={Paper}>
                                     <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
                                         <TableHead>
@@ -392,9 +406,9 @@ export default class AddCaixa extends Component<Props, State> {
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
-                            </div>
-                            <div className="col-5 mt-3">
-                                <h4 className="titulo-central">Lançamentos efetuadas</h4>
+                            </Grid>
+                            <Grid item xs={12} md={5}>
+                                <Typography variant="h6" sx={{ textAlign: "center", mb: 1 }}>Lançamentos efetuadas</Typography>
                                 <TableContainer component={Paper}>
                                     <Table sx={{ minWidth: 450 }} size="small" aria-label="a dense table">
                                         <TableHead>
@@ -424,105 +438,86 @@ export default class AddCaixa extends Component<Props, State> {
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
-                            </div>
-                            <div className="row col-12 mt-3">
-                                <div className="col-3">
-                                    <label>
-                                        <strong>Valor Inicio:</strong>
-                                    </label><strong>{" R$ "}
-                                        {valorCaixaAnterior.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-                                </div>
-                                <div className="col-3">
-                                    <label>
-                                        <strong>Venda PIX:</strong>
-                                    </label><strong>{" R$ "}
-                                        {valorPIXTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-                                </div>
-                                <div className="col-3">
-                                    <label>
-                                        <strong>Venda Debito/Credito:</strong>
-                                    </label><strong>{" R$ "}
-                                        {valorDebitoCreditoTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-                                </div>
-                                <div className="col-3">
-                                    <label>
-                                        <strong>Venda Dinheiro:</strong>
-                                    </label><strong>{" R$ "}
-                                        {valorDinheiroTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-                                </div>
-
-                                <div className="col-3">
-                                    <label>
-                                        <strong>Total Vendas:</strong>
-                                    </label><strong>{" R$ "}
-                                        {valorSunTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-                                </div>
-                                <div className="col-3">
-                                    <label>
-                                        <strong>Total pago:</strong>
-                                    </label><strong>{" R$ "}
-                                        {valorSunPago.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-                                </div>
-                                <div className="col-3">
-                                    <label>
-                                        <strong>Total troco:</strong>
-                                    </label><strong>{" R$ "}
-                                        {valorSunTroco.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-                                </div>
-                                <div className="col-3">
-                                    <label>
-                                        <strong>Total no caixa:</strong>
-                                    </label><strong>{" R$ "}
-                                        {valorTotalCaixa.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-                                </div>
-                            </div>
-                            <div className="row col-12 mt-3">
-                                <div className="col-3">
-                                    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'en-gb'}>
-                                        <DateTimePicker
-                                            label="Data de inicio"
-                                            value={start}
-                                            disabled
-                                            onChange={(newValue) => this.onChangeStart(newValue)}
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={6} md={3}>
+                                        <Typography><strong>Valor Inicio:</strong> R$ {valorCaixaAnterior.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography>
+                                    </Grid>
+                                    <Grid item xs={6} md={3}>
+                                        <Typography><strong>Venda PIX:</strong> R$ {valorPIXTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography>
+                                    </Grid>
+                                    <Grid item xs={6} md={3}>
+                                        <Typography><strong>Venda Debito/Credito:</strong> R$ {valorDebitoCreditoTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography>
+                                    </Grid>
+                                    <Grid item xs={6} md={3}>
+                                        <Typography><strong>Venda Dinheiro:</strong> R$ {valorDinheiroTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography>
+                                    </Grid>
+                                    <Grid item xs={6} md={3}>
+                                        <Typography><strong>Total Vendas:</strong> R$ {valorSunTotal.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography>
+                                    </Grid>
+                                    <Grid item xs={6} md={3}>
+                                        <Typography><strong>Total pago:</strong> R$ {valorSunPago.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography>
+                                    </Grid>
+                                    <Grid item xs={6} md={3}>
+                                        <Typography><strong>Total troco:</strong> R$ {valorSunTroco.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography>
+                                    </Grid>
+                                    <Grid item xs={6} md={3}>
+                                        <Typography><strong>Total no caixa:</strong> R$ {valorTotalCaixa.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Grid container spacing={2} alignItems="center">
+                                    <Grid item xs={12} sm={3}>
+                                        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'en-gb'}>
+                                            <DateTimePicker
+                                                label="Data de inicio"
+                                                value={start}
+                                                disabled
+                                                onChange={(newValue) => this.onChangeStart(newValue)}
+                                            />
+                                        </LocalizationProvider>
+                                    </Grid>
+                                    <Grid item xs={12} sm={3}>
+                                        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'en-gb'}>
+                                            <DateTimePicker
+                                                label="Data de termino"
+                                                value={end}
+                                                onChange={(newValue) => this.onChangeEnd(newValue)}
+                                            />
+                                        </LocalizationProvider>
+                                    </Grid>
+                                    <Grid item xs={12} sm={3}>
+                                        <TextField id="user" label="Usuário" variant="outlined"
+                                            type="text"
+                                            fullWidth
+                                            value={user}
+                                            onChange={this.onChangeUser}
                                         />
-                                    </LocalizationProvider>
-                                </div>
-                                <div className="col-3">
-                                    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'en-gb'}>
-                                        <DateTimePicker
-                                            label="Data de termino"
-                                            value={end}
-                                            onChange={(newValue) => this.onChangeEnd(newValue)}
-                                        />
-                                    </LocalizationProvider>
-                                </div>
-                                <div className="col-3">
-                                    <TextField id="user" label="Usuário" variant="outlined"
-                                        type="text"
-                                        value={user}
-                                        onChange={this.onChangeUser}
-                                    />
-                                </div>
-                                <div className="col-3">
-                                    <button onClick={this.fecharCaixa} className="btn btn-success mt-3">
-                                        Fechar Caixa
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                                    </Grid>
+                                    <Grid item xs={12} sm={3}>
+                                        <Button onClick={this.fecharCaixa} variant="contained" color="primary">
+                                            Fechar Caixa
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
                     ) : (
-                        <div className="row">
-                            <div className="col-3">
+                        <Grid container spacing={2} alignItems="center">
+                            <Grid item xs={12} sm={3}>
                                 <TextField id="valorCaixaAnterior" label="Caixa anterior" variant="outlined"
                                     type="number"
+                                    fullWidth
                                     value={valorCaixaAnterior}
                                     disabled
                                     InputProps={{
                                         startAdornment: <InputAdornment position="start">R$</InputAdornment>,
                                     }}
                                 />
-                            </div>
-                            <div className="col-3">
+                            </Grid>
+                            <Grid item xs={12} sm={3}>
                                 <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'en-gb'}>
                                     <DateTimePicker
                                         label="Data de inicio"
@@ -530,20 +525,21 @@ export default class AddCaixa extends Component<Props, State> {
                                         onChange={(newValue) => this.onChangeStart(newValue)}
                                     />
                                 </LocalizationProvider>
-                            </div>
-                            <div className="col-3">
+                            </Grid>
+                            <Grid item xs={12} sm={3}>
                                 <TextField id="user" label="Usuário" variant="outlined"
                                     type="text"
+                                    fullWidth
                                     value={user}
                                     onChange={this.onChangeUser}
                                 />
-                            </div>
-                            <div className="col-3">
-                                <button onClick={this.abrirCaixa} className="btn btn-success mt-3">
+                            </Grid>
+                            <Grid item xs={12} sm={3}>
+                                <Button onClick={this.abrirCaixa} variant="contained" color="primary">
                                     Abrir Caixa
-                                </button>
-                            </div>
-                        </div>
+                                </Button>
+                            </Grid>
+                        </Grid>
                     )}
 
                 </FormControl>

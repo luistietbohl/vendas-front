@@ -3,6 +3,19 @@ import FuncionarioService from "../../services/funcionario.service";
 import FuncionarioDTO from "../../types/funcionario.type";
 import { Link } from "react-router-dom";
 import Pagination from '@mui/material/Pagination'
+import {
+  Button,
+  Grid,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
+import PageHeader from "../shell/PageHeader";
 
 type Props = {};
 
@@ -66,79 +79,80 @@ export default class FuncionarioList extends Component<Props, State> {
     } = this.state;
 
     return (
-      <div className="row">
-        <div className="col-6">
-          <h4>Funcionarios</h4>
-        </div>
-        <div className="col-6">
-          <div className="mb-3">
-            <Link
+      <div>
+        <PageHeader
+          title="Funcionários"
+          action={
+            <Button
+              component={Link}
               to={"/add_funcionario/"}
-              className="btn btn-success">
+              variant="contained"
+              color="primary"
+            >
               Adicionar novo funcionario
-            </Link>
-          </div>
-        </div>
-
-        <div className="col-8">
-          <div className="mt-3">
+            </Button>
+          }
+        />
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={7}>
             <Pagination
-              className="my-3"
+              className="mb-3"
               siblingCount={1}
               boundaryCount={1}
               variant="outlined"
               shape="rounded"
             />
-          </div>
-        </div>
-        <div className="col-8">
-          <ul className="list-group">
-            {funcionario &&
-              funcionario.map((funcionario, index) => (
-                <li
-                  className={
-                    "list-group-item " +
-                    (index === currentIndex ? "active" : "")
-                  }
-                  onClick={() => this.setActiveFuncionario(funcionario, index)}
-                  key={index}
+            <TableContainer component={Paper}>
+              <Table size="small" aria-label="lista de funcionarios">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Nome</TableCell>
+                    <TableCell align="right">Valor/Hora</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {funcionario &&
+                    funcionario.map((funcionario, index) => (
+                      <TableRow
+                        hover
+                        selected={index === currentIndex}
+                        onClick={() => this.setActiveFuncionario(funcionario, index)}
+                        key={index}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 }, cursor: "pointer" }}
+                      >
+                        <TableCell component="th" scope="row">
+                          <Typography fontWeight={700}>{funcionario.nome}</Typography>
+                        </TableCell>
+                        <TableCell align="right">
+                          R$ {funcionario.valorHora.toLocaleString('pt-br', { minimumFractionDigits: 2 })}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+          <Grid item xs={12} md={5}>
+            {currentFuncionario ? (
+              <Paper sx={{ p: 3 }}>
+                <Typography variant="h6" sx={{ mb: 2 }}>Funcionario</Typography>
+                <Typography sx={{ mb: 2 }}>
+                  <strong>Nome:</strong> {currentFuncionario.nome}
+                </Typography>
+                <Button
+                  component={Link}
+                  to={"/list_funcionario/" + currentFuncionario.cpf}
+                  variant="outlined"
+                  color="secondary"
                 >
-                  <div className="row">
-                    <div className="col-4">{funcionario.cpf}</div>
-                    <div className="col-4">{funcionario.nome}</div>
-                    <div className="col-4 custom-div-valor">R$ {funcionario.valorHora.toLocaleString('pt-br', {minimumFractionDigits: 2})}</div>
-                  </div>
-                </li>
-              ))}
-          </ul>
-
-
-        </div>
-        <div className="col-4">
-          {currentFuncionario ? (
-            <div>
-              <h4>Funcionario</h4>
-              <div>
-                <label>
-                  <strong>Nome:</strong>
-                </label>{" "}
-                {currentFuncionario.nome}
-              </div>
-
-              <Link
-                to={"/list_Funcionario/" + currentFuncionario.cpf}
-                className="badge badge-warning"
-              >
-                Edit
-              </Link>
-            </div>
-          ) : (
-            <div>
-              <br />
-              <p>Selecione um Funcionario...</p>
-            </div>
-          )}
-        </div>
+                  Editar
+                </Button>
+              </Paper>
+            ) : (
+              <Typography sx={{ p: 2 }}>Selecione um Funcionario...</Typography>
+            )}
+          </Grid>
+        </Grid>
       </div>
     );
   }

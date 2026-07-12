@@ -1,12 +1,16 @@
 import { Component, ChangeEvent } from "react";
 import { RouteComponentProps } from 'react-router-dom';
-import { Select, MenuItem, SelectChangeEvent, Tabs, Tab, TextField, InputAdornment } from "@mui/material";
+import {
+  Select, MenuItem, SelectChangeEvent, Tabs, Tab, TextField, InputAdornment,
+  Box, Button, FormControl, Grid, InputLabel, Paper, Typography,
+} from "@mui/material";
 
 import FuncionarioService from "../../services/funcionario.service";
 import FuncionarioDTO from "../../types/funcionario.type";
 import AnoTrabalhoDTO from "../../types/anotrabalho.type";
 import TabContext from "@mui/lab/TabContext";
 import TabPanel from "@mui/lab/TabPanel";
+import PageHeader from "../shell/PageHeader";
 
 interface RouterProps {
   id: string;
@@ -274,113 +278,113 @@ export default class EditFuncionario extends Component<Props, State> {
     return (
       <div>
         {currentFuncionario ? (
-          <div className="edit-form ">
-            <h4>Editar Funcionario</h4>
-            <form>
-              <div className="row">
-                <div className="form-group col-2">
-                  <label htmlFor="identificador">Identificador</label>
-                  <input
-                    type="text"
-                    className="form-control"
+          <div>
+            <PageHeader title="Editar Funcionario" />
+            <Paper sx={{ p: 3, mb: 3 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={6} md={2}>
+                  <TextField
+                    fullWidth
+                    label="Identificador"
                     id="identificador"
                     value={currentFuncionario.cpf}
-                    disabled={true}
+                    disabled
                   />
-                </div>
-                <div className="form-group col-6">
-                  <label htmlFor="nome">Nome</label>
-                  <input
-                    type="text"
-                    className="form-control"
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Nome"
                     id="nome"
                     value={currentFuncionario.nome}
                     onChange={this.onChangeNome}
                   />
-                </div>
-                <div className="form-group col-2">
-                  <label htmlFor="valorHora">Valor Hora</label>
-                  <input
-                    type="number"
-                    className="form-control"
+                </Grid>
+                <Grid item xs={6} md={2}>
+                  <TextField
+                    fullWidth
+                    label="Valor Hora"
                     id="valorHora"
+                    type="number"
                     value={currentFuncionario.valorHora}
                     onChange={this.onChangeValor}
                   />
-                </div>
-                <div className="form-group col-2">
-                  <label htmlFor="ano">Ano</label>
-                  <Select
-                    id="ano"
-                    className="form-control"
-                    value={currentAno}
-                    label="Categoria"
-                    onChange={this.onChangeAno}
-                  >
-                    {currentFuncionario.anos.map((ano) => (
-                      <MenuItem value={ano.ano}>{ano.ano}</MenuItem>
-                    ))}
-                  </Select>
-                </div>
-              </div>
+                </Grid>
+                <Grid item xs={6} md={2}>
+                  <FormControl fullWidth>
+                    <InputLabel id="ano-select-label">Ano</InputLabel>
+                    <Select
+                      labelId="ano-select-label"
+                      id="ano"
+                      value={currentAno}
+                      label="Ano"
+                      onChange={this.onChangeAno}
+                    >
+                      {currentFuncionario.anos.map((ano) => (
+                        <MenuItem value={ano.ano} key={ano.ano}>{ano.ano}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
                 <TabContext value={aba}>
-                  <div className="row">
+                  <Box sx={{ mt: 2, borderBottom: 1, borderColor: "divider" }}>
                     <Tabs value={aba} onChange={this.handleChangeAba}>
                             {anoMes.meses.map((mes) => (
-                                <Tab id={mes.numero.toString()} label={mes.mes} value={mes.numero.toString()} />
+                                <Tab id={mes.numero.toString()} label={mes.mes} value={mes.numero.toString()} key={mes.numero} />
                             ))}
                     </Tabs>
-                  </div>
+                  </Box>
                     {anoMes.meses.map((mes) => (
-                        <TabPanel value={mes.numero.toString()} style={{width: "1300px"}}>
-                          <div className="row mt-2">
-                            <div className="col-1" style={{display: "contents"}}></div>
-                            <div className="col-1"></div>
-                            <div className="col-1"></div>
-                            <div className="col-1"></div>
-                            <div className="col-1"></div>
-                            <div className="col-3"></div>
-                            <div className="col-2">Valor Trabalhado</div>
-                            <div className="col-2">Valor dia</div>
-                          </div>
+                        <TabPanel value={mes.numero.toString()} key={mes.numero} sx={{ px: 0 }}>
+                          <Grid container spacing={1} sx={{ mt: 1 }}>
+                            <Grid item xs={1}></Grid>
+                            <Grid item xs={1}></Grid>
+                            <Grid item xs={1}></Grid>
+                            <Grid item xs={1}></Grid>
+                            <Grid item xs={1}></Grid>
+                            <Grid item xs={3}></Grid>
+                            <Grid item xs={2}><Typography fontWeight={700}>Valor Trabalhado</Typography></Grid>
+                            <Grid item xs={2}><Typography fontWeight={700}>Valor dia</Typography></Grid>
+                          </Grid>
                           {mes.dias.map((dia) => (
-                            <div className="row mt-2">
-                              <div className="col-1" style={{display: "contents"}}>
-                                <p style={{marginTop: "15px"}}>{dia.dia}</p>
-                              </div>
-                              <div className="col-1">
+                            <Grid container spacing={1} alignItems="center" sx={{ mt: 0.5 }} key={dia.dia}>
+                              <Grid item xs={1}>
+                                <Typography>{dia.dia}</Typography>
+                              </Grid>
+                              <Grid item xs={1}>
                                 <TextField id="inicio1" label="Inicio" variant="outlined"
                                                             type="time"
                                                             focused={true}
                                                             value={dia.horaInicio1}
                                                             onChange={(e) => {this.onChangeHoraInicio1(e, mes.numero, dia.dia)}}
                                                         />
-                              </div>
-                              <div className="col-1">
+                              </Grid>
+                              <Grid item xs={1}>
                                 <TextField id="fim1" label="Fim" variant="outlined"
                                                             type="time"
                                                             focused={true}
                                                             value={dia.horaFim1}
                                                             onChange={(e) => {this.onChangeHoraFim1(e, mes.numero, dia.dia)}}
                                                         />
-                              </div>
-                              <div className="col-1">
+                              </Grid>
+                              <Grid item xs={1}>
                                 <TextField id="incio2" label="Inicio" variant="outlined"
                                                             type="time"
                                                             focused={true}
                                                             value={dia.horaInicio2}
                                                             onChange={(e) => {this.onChangeHoraInicio2(e, mes.numero, dia.dia)}}
                                                         />
-                              </div>
-                              <div className="col-1">
+                              </Grid>
+                              <Grid item xs={1}>
                                 <TextField id="fim2" label="Fim" variant="outlined"
                                                             type="time"
                                                             focused={true}
                                                             value={dia.horaFim2}
                                                             onChange={(e) => {this.onChangeHoraFim2(e, mes.numero, dia.dia)}}
                                                         />
-                              </div>
-                              <div className="col-3">
+                              </Grid>
+                              <Grid item xs={3}>
                                 <TextField id="valorVale" label="Valor Vale" variant="outlined"
                                                             type="number"
                                                             value={dia.valorVale}
@@ -389,86 +393,63 @@ export default class EditFuncionario extends Component<Props, State> {
                                                                 startAdornment: <InputAdornment position="start">R$</InputAdornment>,
                                                             }}
                                                         />
-                              </div>
-                              <div className="col-2">
-                                <p style={{marginTop: "15px"}}>R$ {dia.valorTrabalho.toLocaleString('pt-br', 
-                                  { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                              </div>
-                              <div className="col-2">
-                                {dia.valorTotalDia < 0 ? (
-                                  <p style={{marginTop: "15px", color: "red"}}>R$ {dia.valorTotalDia.toLocaleString('pt-br', 
-                                    { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                                ) : (
-                                  <p style={{marginTop: "15px"}}>R$ {dia.valorTotalDia.toLocaleString('pt-br', 
-                                    { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                                )}
-                              </div>
-                            </div>
+                              </Grid>
+                              <Grid item xs={2}>
+                                <Typography>R$ {dia.valorTrabalho.toLocaleString('pt-br',
+                                  { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Typography>
+                              </Grid>
+                              <Grid item xs={2}>
+                                <Typography color={dia.valorTotalDia < 0 ? "error" : "inherit"}>
+                                  R$ {dia.valorTotalDia.toLocaleString('pt-br',
+                                    { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </Typography>
+                              </Grid>
+                            </Grid>
                           ))}
-                          <div className="row">
-                            {mes.valorMes< 0 ? (
-                              <p style={{marginTop: "15px", color: "red"}}>Valor total no mes: R$ {mes.valorMes.toLocaleString('pt-br', 
-                              { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                            ) : (
-                              <p style={{marginTop: "15px"}}>Valor total no mes: R$ {mes.valorMes.toLocaleString('pt-br', 
-                              { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                            )}
-                          </div>
+                          <Typography sx={{ mt: 2 }} color={mes.valorMes < 0 ? "error" : "inherit"} fontWeight={700}>
+                            Valor total no mes: R$ {mes.valorMes.toLocaleString('pt-br',
+                            { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </Typography>
                         </TabPanel>
                     ))}
                 </TabContext>
-               
-            </form>
-            <div className="row">
-              <div className="form-group col-2">
-                <label htmlFor="novoAno">Novo Ano</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  id="novoAno"
-                  value={newAno}
-                  onChange={this.onChangeNovoAno}
-                />
-              </div>
-              <div className="form-group col-2" style={{alignSelf: "end"}}>
-                  <button type="submit"
-                    className="btn btn-success"
-                    onClick={this.addNewAno}>
-                      Adicionar Novo Ano
-                  </button>
-              </div>
-            </div>
+            </Paper>
 
-            <div className="row">
-              <button
-                className="badge mr-2"
-                onClick={this.voltarLista}
-              >
+            <Paper sx={{ p: 3, mb: 3 }}>
+              <Grid container spacing={2} alignItems="center">
+                <Grid item xs={6} md={2}>
+                  <TextField
+                    fullWidth
+                    label="Novo Ano"
+                    id="novoAno"
+                    type="number"
+                    value={newAno}
+                    onChange={this.onChangeNovoAno}
+                  />
+                </Grid>
+                <Grid item xs={6} md={3}>
+                  <Button variant="contained" color="primary" onClick={this.addNewAno}>
+                    Adicionar Novo Ano
+                  </Button>
+                </Grid>
+              </Grid>
+            </Paper>
+
+            <Box sx={{ display: "flex", gap: 1.5 }}>
+              <Button variant="outlined" onClick={this.voltarLista}>
                 Voltar
-              </button>
-
-              <button
-                className="badge badge-danger mr-2"
-                onClick={this.deleteFuncionario}
-              >
+              </Button>
+              <Button variant="outlined" color="error" onClick={this.deleteFuncionario}>
                 Remover
-              </button>
-
-              <button
-                type="submit"
-                className="btn btn-success"
-                onClick={this.updateFuncionario}
-              >
+              </Button>
+              <Button variant="contained" color="primary" onClick={this.updateFuncionario}>
                 Atualizar
-              </button>
-            </div>
-            <p>{this.state.message}</p>
+              </Button>
+            </Box>
+            {this.state.message && <Typography sx={{ mt: 2 }}>{this.state.message}</Typography>}
           </div>
         ) : (
-          <div>
-            <br />
-            <p>Selecione um funcionario...</p>
-          </div>
+          <Typography sx={{ p: 2 }}>Selecione um funcionario...</Typography>
         )}
       </div>
     );
