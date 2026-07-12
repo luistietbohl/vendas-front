@@ -17,6 +17,7 @@ class Login extends Component<Props, State> {
         this.onChangeLogin = this.onChangeLogin.bind(this);
         this.onChangePass = this.onChangePass.bind(this);
         this.login = this.login.bind(this);
+        this.onPressEnter = this.onPressEnter.bind(this);
 
         this.state = {
             login: "",
@@ -58,6 +59,12 @@ class Login extends Component<Props, State> {
         );
     }
 
+    onPressEnter(e: any) {
+        if (e.key === 'Enter') {
+            this.login();
+        }
+    }
+
     render() {
         const { currentUser, login, pass } = this.state;
         return (
@@ -91,6 +98,7 @@ class Login extends Component<Props, State> {
                                 required
                                 value={pass}
                                 onChange={this.onChangePass}
+                                onKeyPress={this.onPressEnter}
                                 name="pass"
                             />
                         </div>
