@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from "react-router-dom";
 
 import './index.css';
+import '@fontsource/nunito/400.css';
+import '@fontsource/nunito/600.css';
+import '@fontsource/nunito/700.css';
+import '@fontsource/pacifico/400.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
