@@ -26,3 +26,6 @@ yarn.lock
 
 # superpowers brainstorming companion sessions
 .superpowers/
+
+# Claude Code local worktrees/session data
+.claude/

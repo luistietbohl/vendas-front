@@ -10,7 +10,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import {
   TextField, InputAdornment, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody,
   InputLabel, Select, MenuItem, SelectChangeEvent, Collapse, Alert,
-  Box, Button, Grid, Typography,
+  Button, Grid, Typography,
 } from "@mui/material";
 import VendaDTO from "../../types/venda.type";
 import LancamentoDTO from "../../types/lancamento.type";
