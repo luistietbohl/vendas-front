@@ -689,8 +689,8 @@ export default class AddVenda extends Component<Props, State> {
                                 </Grid>
                             )}
                             <div className="printme">
-                                <img src={logo} alt={"logo"} style={{ width: '100%' }} />
-                                <h1 className="titulo-central" style={{ fontSize: 'xxx-large', fontWeight: '600' }}>Compras</h1>
+                                <img src={logo} alt={"logo"} />
+                                <h1 className="titulo-central" style={{ fontWeight: '600' }}>Compras</h1>
                                 <ul className="list-group">
                                     <li className="list-group-item">
                                         <div className="row">
