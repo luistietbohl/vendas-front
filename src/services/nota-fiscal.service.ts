@@ -3,6 +3,10 @@ import NotaFiscalDTO from "../types/nota-fiscal.type";
 
 class NotaFiscalService {
 
+  buscar(vendaId: string) {
+    return http.get<NotaFiscalDTO>(`/notas-fiscais/${vendaId}`);
+  }
+
   emitir(vendaId: string) {
     return http.post<NotaFiscalDTO>(`/notas-fiscais/${vendaId}/emitir`);
   }

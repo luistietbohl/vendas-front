@@ -21,6 +21,22 @@ export default function NotaFiscalPanel({ vendaUid }: Props) {
     setErro(null);
     setMostrarCancelamento(false);
     setJustificativa("");
+
+    if (!vendaUid) {
+      return;
+    }
+    const requestedVendaUid = vendaUid;
+    NotaFiscalService.buscar(vendaUid)
+      .then((response) => {
+        if (vendaUidRef.current !== requestedVendaUid) {
+          return;
+        }
+        setNota(response.data);
+      })
+      .catch(() => {
+        // Falha na carga silenciosa em segundo plano: mantém nota como null
+        // e deixa o operador acionar "Emitir Nota Fiscal" manualmente.
+      });
   }, [vendaUid]);
 
   function emitir() {
@@ -101,7 +117,7 @@ export default function NotaFiscalPanel({ vendaUid }: Props) {
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
       {erro && <Alert severity="error">{erro}</Alert>}
 
-      {(!nota || nota.status === "REJEITADA" || nota.status === "ERRO") && (
+      {(!nota || nota.status === "NAO_EMITIDA" || nota.status === "REJEITADA" || nota.status === "ERRO") && (
         <Button
           variant="contained"
           color="primary"
