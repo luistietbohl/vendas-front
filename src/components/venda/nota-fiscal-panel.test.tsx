@@ -48,4 +48,28 @@ describe('NotaFiscalPanel', () => {
     expect(await screen.findByText(/pelo menos 15 caracteres/)).toBeInTheDocument();
     expect(mockedService.cancelar).not.toHaveBeenCalled();
   });
+
+  it('ignores a stale emitir response for a venda that is no longer displayed', async () => {
+    let resolveEmitir: (value: any) => void;
+    const pendingEmitir = new Promise((resolve) => {
+      resolveEmitir = resolve;
+    });
+    mockedService.emitir.mockReturnValue(pendingEmitir as any);
+
+    const { rerender } = render(<NotaFiscalPanel vendaUid="venda-1" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Emitir Nota Fiscal' }));
+
+    expect(mockedService.emitir).toHaveBeenCalledWith('venda-1');
+
+    rerender(<NotaFiscalPanel vendaUid="venda-2" />);
+
+    resolveEmitir!({
+      data: { vendaUid: 'venda-1', status: 'AUTORIZADA', urlDanfe: 'https://focusnfe/danfe/1' },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Emitir Nota Fiscal' })).toBeInTheDocument();
+    });
+    expect(screen.queryByRole('link', { name: 'Ver DANFE' })).not.toBeInTheDocument();
+  });
 });

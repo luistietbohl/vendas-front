@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Alert, Box, Button, TextField } from "@mui/material";
 import NotaFiscalDTO from "../../types/nota-fiscal.type";
 import NotaFiscalService from "../../services/nota-fiscal.service";
@@ -13,8 +13,10 @@ export default function NotaFiscalPanel({ vendaUid }: Props) {
   const [erro, setErro] = useState<string | null>(null);
   const [justificativa, setJustificativa] = useState("");
   const [mostrarCancelamento, setMostrarCancelamento] = useState(false);
+  const vendaUidRef = useRef(vendaUid);
 
   useEffect(() => {
+    vendaUidRef.current = vendaUid;
     setNota(null);
     setErro(null);
     setMostrarCancelamento(false);
@@ -25,14 +27,21 @@ export default function NotaFiscalPanel({ vendaUid }: Props) {
     if (!vendaUid) {
       return;
     }
+    const requestedVendaUid = vendaUid;
     setCarregando(true);
     setErro(null);
     NotaFiscalService.emitir(vendaUid)
       .then((response) => {
+        if (vendaUidRef.current !== requestedVendaUid) {
+          return;
+        }
         setNota(response.data);
         setCarregando(false);
       })
       .catch(() => {
+        if (vendaUidRef.current !== requestedVendaUid) {
+          return;
+        }
         setErro("Não foi possível emitir a nota fiscal. Tente novamente.");
         setCarregando(false);
       });
@@ -42,14 +51,21 @@ export default function NotaFiscalPanel({ vendaUid }: Props) {
     if (!vendaUid) {
       return;
     }
+    const requestedVendaUid = vendaUid;
     setCarregando(true);
     setErro(null);
     NotaFiscalService.status(vendaUid)
       .then((response) => {
+        if (vendaUidRef.current !== requestedVendaUid) {
+          return;
+        }
         setNota(response.data);
         setCarregando(false);
       })
       .catch(() => {
+        if (vendaUidRef.current !== requestedVendaUid) {
+          return;
+        }
         setErro("Não foi possível consultar o status da nota fiscal.");
         setCarregando(false);
       });
@@ -60,15 +76,22 @@ export default function NotaFiscalPanel({ vendaUid }: Props) {
       setErro("A justificativa precisa ter pelo menos 15 caracteres.");
       return;
     }
+    const requestedVendaUid = vendaUid;
     setCarregando(true);
     setErro(null);
     NotaFiscalService.cancelar(vendaUid, justificativa)
       .then((response) => {
+        if (vendaUidRef.current !== requestedVendaUid) {
+          return;
+        }
         setNota(response.data);
         setCarregando(false);
         setMostrarCancelamento(false);
       })
       .catch(() => {
+        if (vendaUidRef.current !== requestedVendaUid) {
+          return;
+        }
         setErro("Não foi possível cancelar a nota fiscal.");
         setCarregando(false);
       });
