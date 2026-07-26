@@ -16,6 +16,7 @@ import CaixaService from "../../services/caixa.service";
 import logo from "../../logobomcreampretoebranco.png";
 import { Grid, Paper, Button, List, ListItem, ListItemText, Typography, Box } from "@mui/material";
 import PageHeader from "../shell/PageHeader";
+import NotaFiscalPanel from "./nota-fiscal-panel";
 
 type Props = {};
 
@@ -29,6 +30,7 @@ type State = VendaDTO & {
     open: boolean,
     msg: string,
     openModel: boolean,
+    lastVendaUid: string | null,
 };
 
 export default class AddVenda extends Component<Props, State> {
@@ -73,6 +75,7 @@ export default class AddVenda extends Component<Props, State> {
             msg: "",
             openModel: false,
             categorias: [],
+            lastVendaUid: null,
         };
     }
 
@@ -170,6 +173,7 @@ export default class AddVenda extends Component<Props, State> {
         }
 
         const list = this.state.itens;
+        const startingNewCart = list.length === 0;
         const cliente = list.length > 0 ? this.state.cliente : "";
         if (this.state.currentItem) {
             var item = list.find((item) => item.produto.uid === this.state.currentItem?.produto.uid);
@@ -192,6 +196,7 @@ export default class AddVenda extends Component<Props, State> {
             currentItem: null,
             produtoID: "",
             produtoNome: null,
+            lastVendaUid: startingNewCart ? null : this.state.lastVendaUid,
         });
     }
 
@@ -269,6 +274,7 @@ export default class AddVenda extends Component<Props, State> {
                 this.setState({
                     open: true,
                     msg: "Venda registrada com sucesso!",
+                    lastVendaUid: response.data.uid ?? null,
                 });
 
             })
@@ -415,6 +421,7 @@ export default class AddVenda extends Component<Props, State> {
             currentItem: null,
             produtoID: "",
             produtoNome: null,
+            lastVendaUid: null,
         });
     }
 
@@ -703,6 +710,7 @@ export default class AddVenda extends Component<Props, State> {
                                                 <Button onClick={this.imprimir} variant="contained" color="primary" size="medium">
                                                     Imprimir
                                                 </Button>
+                                                <NotaFiscalPanel vendaUid={this.state.lastVendaUid} />
                                             </Box>
                                         </Grid>
                                     </Grid>
