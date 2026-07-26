@@ -27,6 +27,10 @@ export default class AddProduto extends Component<Props, State> {
         this.saveProduto = this.saveProduto.bind(this);
         this.newProduto = this.newProduto.bind(this);
         this.onChangeCategoria = this.onChangeCategoria.bind(this);
+        this.onChangeNcm = this.onChangeNcm.bind(this);
+        this.onChangeCfop = this.onChangeCfop.bind(this);
+        this.onChangeCsosn = this.onChangeCsosn.bind(this);
+        this.onChangeUnidadeComercial = this.onChangeUnidadeComercial.bind(this);
 
         this.state = {
             categorias: [],
@@ -35,6 +39,10 @@ export default class AddProduto extends Component<Props, State> {
             valor: 0,
             tipoMedida: "Unidade",
             categoria: "",
+            ncm: "",
+            cfop: "5102",
+            csosn: "102",
+            unidadeComercial: "UN",
             submitted: false,
         };
     }
@@ -89,6 +97,30 @@ export default class AddProduto extends Component<Props, State> {
         });
     }
 
+    onChangeNcm(e: ChangeEvent<HTMLInputElement>) {
+        this.setState({
+            ncm: e.target.value
+        });
+    }
+
+    onChangeCfop(e: ChangeEvent<HTMLInputElement>) {
+        this.setState({
+            cfop: e.target.value
+        });
+    }
+
+    onChangeCsosn(e: ChangeEvent<HTMLInputElement>) {
+        this.setState({
+            csosn: e.target.value
+        });
+    }
+
+    onChangeUnidadeComercial(e: ChangeEvent<HTMLInputElement>) {
+        this.setState({
+            unidadeComercial: e.target.value
+        });
+    }
+
     saveProduto() {
         const data: ProdutoDTO = {
             uid: this.state.uid,
@@ -96,6 +128,10 @@ export default class AddProduto extends Component<Props, State> {
             valor: this.state.valor,
             tipoMedida: this.state.tipoMedida,
             categoria: this.state.categoria,
+            ncm: this.state.ncm,
+            cfop: this.state.cfop,
+            csosn: this.state.csosn,
+            unidadeComercial: this.state.unidadeComercial,
         };
 
         ProdutoService.create(data)
@@ -117,12 +153,17 @@ export default class AddProduto extends Component<Props, State> {
             valor: 0,
             tipoMedida: "Unidade",
             categoria: "",
+            ncm: "",
+            cfop: "5102",
+            csosn: "102",
+            unidadeComercial: "UN",
             submitted: false
         });
     }
 
     render() {
-        const { submitted, uid, nome, valor, tipoMedida, categoria, categorias } = this.state;
+        const { submitted, uid, nome, valor, tipoMedida, categoria, categorias,
+            ncm, cfop, csosn, unidadeComercial } = this.state;
 
         return (
             <div>
@@ -199,6 +240,46 @@ export default class AddProduto extends Component<Props, State> {
                                         ))}
                                     </Select>
                                 </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="NCM"
+                                    required
+                                    value={ncm}
+                                    onChange={this.onChangeNcm}
+                                    name="ncm"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="CFOP"
+                                    required
+                                    value={cfop}
+                                    onChange={this.onChangeCfop}
+                                    name="cfop"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="CSOSN"
+                                    required
+                                    value={csosn}
+                                    onChange={this.onChangeCsosn}
+                                    name="csosn"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Unidade Comercial"
+                                    required
+                                    value={unidadeComercial}
+                                    onChange={this.onChangeUnidadeComercial}
+                                    name="unidadeComercial"
+                                />
                             </Grid>
                             <Grid item xs={12}>
                                 <Box sx={{ display: "flex", gap: 1.5 }}>

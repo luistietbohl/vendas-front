@@ -30,6 +30,10 @@ export default class EditProduto extends Component<Props, State> {
     this.onChangeValor = this.onChangeValor.bind(this);
     this.onChangeTipoMedida = this.onChangeTipoMedida.bind(this);
     this.onChangeCategoria = this.onChangeCategoria.bind(this);
+    this.onChangeNcm = this.onChangeNcm.bind(this);
+    this.onChangeCfop = this.onChangeCfop.bind(this);
+    this.onChangeCsosn = this.onChangeCsosn.bind(this);
+    this.onChangeUnidadeComercial = this.onChangeUnidadeComercial.bind(this);
     this.getProduto = this.getProduto.bind(this);
     this.updateProduto = this.updateProduto.bind(this);
     this.deleteProduto = this.deleteProduto.bind(this);
@@ -42,6 +46,10 @@ export default class EditProduto extends Component<Props, State> {
         valor: 0,
         categoria: "",
         tipoMedida: "",
+        ncm: "",
+        cfop: "",
+        csosn: "",
+        unidadeComercial: "",
       },
       categorias: [],
       message: "",
@@ -110,6 +118,54 @@ export default class EditProduto extends Component<Props, State> {
         currentProduto: {
           ...prevState.currentProduto,
           categoria: categoria,
+        },
+      };
+    });
+  }
+
+  onChangeNcm(e: ChangeEvent<HTMLInputElement>) {
+    const ncm = e.target.value;
+    this.setState(function (prevState) {
+      return {
+        currentProduto: {
+          ...prevState.currentProduto,
+          ncm: ncm,
+        },
+      };
+    });
+  }
+
+  onChangeCfop(e: ChangeEvent<HTMLInputElement>) {
+    const cfop = e.target.value;
+    this.setState(function (prevState) {
+      return {
+        currentProduto: {
+          ...prevState.currentProduto,
+          cfop: cfop,
+        },
+      };
+    });
+  }
+
+  onChangeCsosn(e: ChangeEvent<HTMLInputElement>) {
+    const csosn = e.target.value;
+    this.setState(function (prevState) {
+      return {
+        currentProduto: {
+          ...prevState.currentProduto,
+          csosn: csosn,
+        },
+      };
+    });
+  }
+
+  onChangeUnidadeComercial(e: ChangeEvent<HTMLInputElement>) {
+    const unidadeComercial = e.target.value;
+    this.setState(function (prevState) {
+      return {
+        currentProduto: {
+          ...prevState.currentProduto,
+          unidadeComercial: unidadeComercial,
         },
       };
     });
@@ -224,6 +280,38 @@ export default class EditProduto extends Component<Props, State> {
                       ))}
                     </Select>
                   </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="NCM"
+                    value={currentProduto.ncm}
+                    onChange={this.onChangeNcm}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="CFOP"
+                    value={currentProduto.cfop}
+                    onChange={this.onChangeCfop}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="CSOSN"
+                    value={currentProduto.csosn}
+                    onChange={this.onChangeCsosn}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Unidade Comercial"
+                    value={currentProduto.unidadeComercial}
+                    onChange={this.onChangeUnidadeComercial}
+                  />
                 </Grid>
               </Grid>
             </Paper>
