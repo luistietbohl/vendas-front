@@ -725,6 +725,11 @@ export default class AddVenda extends Component<Props, State> {
                                             <ListItemText primary="Sem itens adicionados" />
                                         </ListItem>
                                     </List>
+                                    {this.state.lastVendaUid && (
+                                        <Box sx={{ mt: 2 }}>
+                                            <NotaFiscalPanel vendaUid={this.state.lastVendaUid} />
+                                        </Box>
+                                    )}
                                   </Paper>
                                 </Grid>
                             )}
