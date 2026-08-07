@@ -92,9 +92,14 @@ export default class AddProduto extends Component<Props, State> {
 
     onChangeCategoria(event: SelectChangeEvent<string>) {
         const categoria = event.target.value as string;
-        this.setState({
+        const categoriaSelecionada = this.state.categorias.find((cat) => cat.uid === categoria);
+
+        this.setState((prevState) => ({
             categoria: categoria,
-        });
+            ncm: !prevState.ncm && categoriaSelecionada?.ncmPadrao
+                ? categoriaSelecionada.ncmPadrao
+                : prevState.ncm,
+        }));
     }
 
     onChangeNcm(e: ChangeEvent<HTMLInputElement>) {

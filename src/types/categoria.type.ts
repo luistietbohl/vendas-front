@@ -4,4 +4,5 @@ export default interface CategoriaDTO {
     nome: string,
     tipo: string,
     ordem: number,
+    ncmPadrao?: string | null,
 }
