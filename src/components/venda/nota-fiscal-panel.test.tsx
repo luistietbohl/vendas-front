@@ -7,13 +7,19 @@ jest.mock('../../services/nota-fiscal.service');
 const mockedService = NotaFiscalService as jest.Mocked<typeof NotaFiscalService>;
 
 describe('NotaFiscalPanel', () => {
+  let openSpy: jest.SpyInstance;
+
   beforeEach(() => {
     mockedService.buscar.mockResolvedValue({
       data: { vendaUid: 'venda-1', status: 'NAO_EMITIDA' },
     } as any);
+    // jsdom has no real window.open; stub it so tests that don't care about
+    // printing (most of them) don't log "Not implemented" noise.
+    openSpy = jest.spyOn(window, 'open').mockReturnValue(null);
   });
 
   afterEach(() => {
+    openSpy.mockRestore();
     jest.clearAllMocks();
   });
 
@@ -94,6 +100,40 @@ describe('NotaFiscalPanel', () => {
       );
     });
     expect(mockedService.emitir).not.toHaveBeenCalled();
+  });
+
+  it('opens and prints the DANFE automatically after emitir authorizes the note', async () => {
+    mockedService.emitir.mockResolvedValue({
+      data: { vendaUid: 'venda-1', status: 'AUTORIZADA', urlDanfe: 'https://focusnfe/danfe/1' },
+    } as any);
+
+    const fakeWindow = { addEventListener: jest.fn(), print: jest.fn() };
+    openSpy.mockReturnValue(fakeWindow as any);
+
+    render(<NotaFiscalPanel vendaUid="venda-1" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Emitir Nota Fiscal' }));
+
+    await waitFor(() => {
+      expect(openSpy).toHaveBeenCalledWith('https://focusnfe/danfe/1', '_blank');
+    });
+
+    const loadHandler = fakeWindow.addEventListener.mock.calls.find(([event]) => event === 'load')?.[1];
+    expect(loadHandler).toBeDefined();
+    loadHandler();
+    expect(fakeWindow.print).toHaveBeenCalled();
+  });
+
+  it('does not auto-print when an authorized status is only loaded passively on mount', async () => {
+    mockedService.buscar.mockResolvedValue({
+      data: { vendaUid: 'venda-1', status: 'AUTORIZADA', urlDanfe: 'https://focusnfe/danfe/existing' },
+    } as any);
+
+    render(<NotaFiscalPanel vendaUid="venda-1" />);
+
+    await waitFor(() => {
+      expect(screen.getByRole('link', { name: 'Ver DANFE' })).toBeInTheDocument();
+    });
+    expect(openSpy).not.toHaveBeenCalled();
   });
 
   it('ignores a stale buscar response for a venda that is no longer displayed', async () => {

@@ -39,6 +39,20 @@ export default function NotaFiscalPanel({ vendaUid }: Props) {
       });
   }, [vendaUid]);
 
+  function imprimirDanfeSeAutorizada(notaAtualizada: NotaFiscalDTO) {
+    if (notaAtualizada.status !== "AUTORIZADA" || !notaAtualizada.urlDanfe) {
+      return;
+    }
+    const janela = window.open(notaAtualizada.urlDanfe, "_blank");
+    if (!janela) {
+      // Navegador bloqueou o popup: o operador ainda pode abrir pelo botão "Ver DANFE".
+      return;
+    }
+    janela.addEventListener("load", () => {
+      janela.print();
+    });
+  }
+
   function emitir() {
     if (!vendaUid) {
       return;
@@ -53,6 +67,7 @@ export default function NotaFiscalPanel({ vendaUid }: Props) {
         }
         setNota(response.data);
         setCarregando(false);
+        imprimirDanfeSeAutorizada(response.data);
       })
       .catch(() => {
         if (vendaUidRef.current !== requestedVendaUid) {
@@ -77,6 +92,7 @@ export default function NotaFiscalPanel({ vendaUid }: Props) {
         }
         setNota(response.data);
         setCarregando(false);
+        imprimirDanfeSeAutorizada(response.data);
       })
       .catch(() => {
         if (vendaUidRef.current !== requestedVendaUid) {
