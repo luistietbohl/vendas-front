@@ -133,6 +133,10 @@ export default function NotaFiscalPanel({ vendaUid }: Props) {
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
       {erro && <Alert severity="error">{erro}</Alert>}
 
+      {nota && (nota.status === "REJEITADA" || nota.status === "ERRO") && nota.mensagemSefaz && (
+        <Alert severity="error">{nota.mensagemSefaz}</Alert>
+      )}
+
       {(!nota || nota.status === "NAO_EMITIDA" || nota.status === "REJEITADA" || nota.status === "ERRO") && (
         <Button
           variant="contained"

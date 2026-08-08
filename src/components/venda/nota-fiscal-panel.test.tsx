@@ -136,6 +136,24 @@ describe('NotaFiscalPanel', () => {
     expect(openSpy).not.toHaveBeenCalled();
   });
 
+  it('shows the SEFAZ rejection message and still allows retrying', async () => {
+    mockedService.emitir.mockResolvedValue({
+      data: {
+        vendaUid: 'venda-1',
+        status: 'REJEITADA',
+        mensagemSefaz: 'Rejeicao: NFC-e com Data-Hora de emissao atrasada',
+      },
+    } as any);
+
+    render(<NotaFiscalPanel vendaUid="venda-1" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Emitir Nota Fiscal' }));
+
+    expect(
+      await screen.findByText('Rejeicao: NFC-e com Data-Hora de emissao atrasada')
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Emitir Nota Fiscal' })).toBeInTheDocument();
+  });
+
   it('ignores a stale buscar response for a venda that is no longer displayed', async () => {
     let resolveBuscar: (value: any) => void;
     const pendingBuscar = new Promise((resolve) => {
