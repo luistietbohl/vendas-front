@@ -42,7 +42,7 @@ describe('NotaFiscalPanel', () => {
         'https://focusnfe/danfe/1'
       );
     });
-    expect(mockedService.emitir).toHaveBeenCalledWith('venda-1');
+    expect(mockedService.emitir).toHaveBeenCalledWith('venda-1', undefined);
   });
 
   it('requires a justificativa of at least 15 characters to cancel', async () => {
@@ -72,7 +72,7 @@ describe('NotaFiscalPanel', () => {
     await waitFor(() => expect(mockedService.buscar).toHaveBeenCalledWith('venda-1'));
     fireEvent.click(screen.getByRole('button', { name: 'Emitir Nota Fiscal' }));
 
-    expect(mockedService.emitir).toHaveBeenCalledWith('venda-1');
+    expect(mockedService.emitir).toHaveBeenCalledWith('venda-1', undefined);
 
     rerender(<NotaFiscalPanel vendaUid="venda-2" />);
 
@@ -178,5 +178,46 @@ describe('NotaFiscalPanel', () => {
     });
     expect(screen.queryByRole('link', { name: 'Ver DANFE' })).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Emitir Nota Fiscal' })).toBeInTheDocument();
+  });
+
+  it('shows an invalid CPF message and disables the emitir button', () => {
+    render(<NotaFiscalPanel vendaUid="venda-1" />);
+
+    fireEvent.change(screen.getByLabelText('CPF do cliente (opcional)'), {
+      target: { value: '111.111.111-11' },
+    });
+
+    expect(screen.getByText('CPF inválido')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Emitir Nota Fiscal' })).toBeDisabled();
+  });
+
+  it('sends only the CPF digits to the service when a valid CPF is entered', async () => {
+    mockedService.emitir.mockResolvedValue({
+      data: { vendaUid: 'venda-1', status: 'AUTORIZADA', urlDanfe: 'https://focusnfe/danfe/1' },
+    } as any);
+
+    render(<NotaFiscalPanel vendaUid="venda-1" />);
+
+    fireEvent.change(screen.getByLabelText('CPF do cliente (opcional)'), {
+      target: { value: '111.444.777-35' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Emitir Nota Fiscal' }));
+
+    await waitFor(() => {
+      expect(mockedService.emitir).toHaveBeenCalledWith('venda-1', '11144477735');
+    });
+  });
+
+  it('clears the CPF field when the venda changes', () => {
+    const { rerender } = render(<NotaFiscalPanel vendaUid="venda-1" />);
+
+    fireEvent.change(screen.getByLabelText('CPF do cliente (opcional)'), {
+      target: { value: '111.444.777-35' },
+    });
+    expect(screen.getByLabelText('CPF do cliente (opcional)')).toHaveValue('111.444.777-35');
+
+    rerender(<NotaFiscalPanel vendaUid="venda-2" />);
+
+    expect(screen.getByLabelText('CPF do cliente (opcional)')).toHaveValue('');
   });
 });

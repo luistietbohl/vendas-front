@@ -7,8 +7,10 @@ class NotaFiscalService {
     return http.get<NotaFiscalDTO>(`/notas-fiscais/${vendaId}`);
   }
 
-  emitir(vendaId: string) {
-    return http.post<NotaFiscalDTO>(`/notas-fiscais/${vendaId}/emitir`);
+  emitir(vendaId: string, cpfDestinatario?: string) {
+    return http.post<NotaFiscalDTO>(`/notas-fiscais/${vendaId}/emitir`, {
+      cpfDestinatario: cpfDestinatario ?? null,
+    });
   }
 
   status(vendaId: string) {

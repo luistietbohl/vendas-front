@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Alert, Box, Button, TextField } from "@mui/material";
 import NotaFiscalDTO from "../../types/nota-fiscal.type";
 import NotaFiscalService from "../../services/nota-fiscal.service";
+import { apenasDigitos, cpfValido, formatarCpf } from "../../utils/cpf";
 
 type Props = {
   vendaUid: string | null;
@@ -13,7 +14,14 @@ export default function NotaFiscalPanel({ vendaUid }: Props) {
   const [erro, setErro] = useState<string | null>(null);
   const [justificativa, setJustificativa] = useState("");
   const [mostrarCancelamento, setMostrarCancelamento] = useState(false);
+  const [cpfCliente, setCpfCliente] = useState("");
   const vendaUidRef = useRef(vendaUid);
+  const cpfDigitos = apenasDigitos(cpfCliente);
+  const cpfInvalido = cpfDigitos.length > 0 && !cpfValido(cpfCliente);
+
+  function handleCpfChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setCpfCliente(formatarCpf(e.target.value));
+  }
 
   useEffect(() => {
     vendaUidRef.current = vendaUid;
@@ -21,6 +29,7 @@ export default function NotaFiscalPanel({ vendaUid }: Props) {
     setErro(null);
     setMostrarCancelamento(false);
     setJustificativa("");
+    setCpfCliente("");
 
     if (!vendaUid) {
       return;
@@ -54,13 +63,13 @@ export default function NotaFiscalPanel({ vendaUid }: Props) {
   }
 
   function emitir() {
-    if (!vendaUid) {
+    if (!vendaUid || cpfInvalido) {
       return;
     }
     const requestedVendaUid = vendaUid;
     setCarregando(true);
     setErro(null);
-    NotaFiscalService.emitir(vendaUid)
+    NotaFiscalService.emitir(vendaUid, cpfDigitos || undefined)
       .then((response) => {
         if (vendaUidRef.current !== requestedVendaUid) {
           return;
@@ -138,14 +147,24 @@ export default function NotaFiscalPanel({ vendaUid }: Props) {
       )}
 
       {(!nota || nota.status === "NAO_EMITIDA" || nota.status === "REJEITADA" || nota.status === "ERRO") && (
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={!vendaUid || carregando}
-          onClick={emitir}
-        >
-          Emitir Nota Fiscal
-        </Button>
+        <>
+          <TextField
+            label="CPF do cliente (opcional)"
+            value={cpfCliente}
+            onChange={handleCpfChange}
+            error={cpfInvalido}
+            helperText={cpfInvalido ? "CPF inválido" : " "}
+            inputProps={{ maxLength: 14 }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!vendaUid || carregando || cpfInvalido}
+            onClick={emitir}
+          >
+            Emitir Nota Fiscal
+          </Button>
+        </>
       )}
 
       {nota && nota.status === "PROCESSANDO" && (
