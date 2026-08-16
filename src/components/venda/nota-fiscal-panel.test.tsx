@@ -191,6 +191,17 @@ describe('NotaFiscalPanel', () => {
     expect(screen.getByRole('button', { name: 'Emitir Nota Fiscal' })).toBeDisabled();
   });
 
+  it('does not show an invalid CPF message while the CPF is still incomplete, but keeps the button disabled', () => {
+    render(<NotaFiscalPanel vendaUid="venda-1" />);
+
+    fireEvent.change(screen.getByLabelText('CPF do cliente (opcional)'), {
+      target: { value: '111.444' },
+    });
+
+    expect(screen.queryByText('CPF inválido')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Emitir Nota Fiscal' })).toBeDisabled();
+  });
+
   it('sends only the CPF digits to the service when a valid CPF is entered', async () => {
     mockedService.emitir.mockResolvedValue({
       data: { vendaUid: 'venda-1', status: 'AUTORIZADA', urlDanfe: 'https://focusnfe/danfe/1' },

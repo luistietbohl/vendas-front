@@ -17,7 +17,9 @@ export default function NotaFiscalPanel({ vendaUid }: Props) {
   const [cpfCliente, setCpfCliente] = useState("");
   const vendaUidRef = useRef(vendaUid);
   const cpfDigitos = apenasDigitos(cpfCliente);
-  const cpfInvalido = cpfDigitos.length > 0 && !cpfValido(cpfCliente);
+  const cpfIncompleto = cpfDigitos.length > 0 && cpfDigitos.length < 11;
+  const cpfInvalido = cpfDigitos.length === 11 && !cpfValido(cpfDigitos);
+  const cpfBloqueiaEmissao = cpfIncompleto || cpfInvalido;
 
   function handleCpfChange(e: React.ChangeEvent<HTMLInputElement>) {
     setCpfCliente(formatarCpf(e.target.value));
@@ -63,7 +65,7 @@ export default function NotaFiscalPanel({ vendaUid }: Props) {
   }
 
   function emitir() {
-    if (!vendaUid || cpfInvalido) {
+    if (!vendaUid || cpfBloqueiaEmissao) {
       return;
     }
     const requestedVendaUid = vendaUid;
@@ -159,7 +161,7 @@ export default function NotaFiscalPanel({ vendaUid }: Props) {
           <Button
             variant="contained"
             color="primary"
-            disabled={!vendaUid || carregando || cpfInvalido}
+            disabled={!vendaUid || carregando || cpfBloqueiaEmissao}
             onClick={emitir}
           >
             Emitir Nota Fiscal
