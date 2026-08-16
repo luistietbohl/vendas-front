@@ -22,6 +22,10 @@ class CategoriaService {
     return http.delete<any>(`/categoria/${id}`);
   }
 
+  aplicarNcmPadrao(categoria: string, ncm: string) {
+    return http.post<number>("/produto/aplicar-ncm-padrao", { categoria, ncm });
+  }
+
 }
 
 export default new CategoriaService();

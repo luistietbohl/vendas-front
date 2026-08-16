@@ -4,4 +4,8 @@ export default interface ProdutoDTO {
   valor: number,
   tipoMedida: string,
   categoria: string,
+  ncm: string,
+  cfop: string,
+  csosn: string,
+  unidadeComercial: string,
 }

@@ -16,6 +16,7 @@ import CaixaService from "../../services/caixa.service";
 import logo from "../../logobomcreampretoebranco.png";
 import { Grid, Paper, Button, List, ListItem, ListItemText, Typography, Box } from "@mui/material";
 import PageHeader from "../shell/PageHeader";
+import NotaFiscalPanel from "./nota-fiscal-panel";
 
 type Props = {};
 
@@ -29,6 +30,7 @@ type State = VendaDTO & {
     open: boolean,
     msg: string,
     openModel: boolean,
+    lastVendaUid: string | null,
 };
 
 export default class AddVenda extends Component<Props, State> {
@@ -73,6 +75,7 @@ export default class AddVenda extends Component<Props, State> {
             msg: "",
             openModel: false,
             categorias: [],
+            lastVendaUid: null,
         };
     }
 
@@ -170,6 +173,7 @@ export default class AddVenda extends Component<Props, State> {
         }
 
         const list = this.state.itens;
+        const startingNewCart = list.length === 0;
         const cliente = list.length > 0 ? this.state.cliente : "";
         if (this.state.currentItem) {
             var item = list.find((item) => item.produto.uid === this.state.currentItem?.produto.uid);
@@ -192,6 +196,7 @@ export default class AddVenda extends Component<Props, State> {
             currentItem: null,
             produtoID: "",
             produtoNome: null,
+            lastVendaUid: startingNewCart ? null : this.state.lastVendaUid,
         });
     }
 
@@ -269,6 +274,7 @@ export default class AddVenda extends Component<Props, State> {
                 this.setState({
                     open: true,
                     msg: "Venda registrada com sucesso!",
+                    lastVendaUid: response.data.uid ?? null,
                 });
 
             })
@@ -415,6 +421,7 @@ export default class AddVenda extends Component<Props, State> {
             currentItem: null,
             produtoID: "",
             produtoNome: null,
+            lastVendaUid: null,
         });
     }
 
@@ -436,7 +443,7 @@ export default class AddVenda extends Component<Props, State> {
             valorPago, valorTroco, produtoID, produtoNome, categorias, open, msg, vendasEmAberto } = this.state;
 
         return (
-            <div>
+            <Box sx={{ '& *': { fontWeight: 'bold !important' } }}>
                 <PageHeader title="Nova Venda" />
                 <FormControl fullWidth>
                     <Collapse in={open} addEndListener={this.finalizaAlert}>
@@ -461,7 +468,39 @@ export default class AddVenda extends Component<Props, State> {
                                                         exclusive
                                                         onChange={this.handleChangeProduto}
                                                         aria-label="Platform"
-                                                        sx={{ width: "100%", mb: 2 }}
+                                                        sx={{
+                                                            width: "100%", mb: 2, gap: 1,
+                                                            '& .MuiToggleButtonGroup-grouped': {
+                                                                margin: 0,
+                                                                borderRadius: '12px !important',
+                                                                border: '2px solid #F6C2E0 !important',
+                                                                backgroundColor: '#FFFFFF',
+                                                                color: '#0A3A61',
+                                                                fontSize: '0.95rem',
+                                                                justifyContent: 'flex-start',
+                                                                textAlign: 'left',
+                                                                py: 1.2,
+                                                                px: 2,
+                                                                boxShadow: '0 1px 3px rgba(10,58,97,0.12)',
+                                                                transition: 'transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, border-color 0.15s ease',
+                                                                '&:hover': {
+                                                                    backgroundColor: '#F6C2E0 !important',
+                                                                    borderColor: '#F0A8CE !important',
+                                                                    transform: 'translateY(-1px)',
+                                                                    boxShadow: '0 4px 10px rgba(10,58,97,0.18) !important',
+                                                                },
+                                                                '&.Mui-selected': {
+                                                                    backgroundColor: '#0E4F82 !important',
+                                                                    borderColor: '#0E4F82 !important',
+                                                                    color: '#FFFFFF !important',
+                                                                    boxShadow: '0 4px 12px rgba(14,79,130,0.4) !important',
+                                                                },
+                                                                '&.Mui-selected:hover': {
+                                                                    backgroundColor: '#0A3A61 !important',
+                                                                    borderColor: '#0A3A61 !important',
+                                                                },
+                                                            },
+                                                        }}
                                                     >
                                                         {produtos &&
                                                             produtos.filter(prod => prod.categoria === categoria.uid)
@@ -671,6 +710,7 @@ export default class AddVenda extends Component<Props, State> {
                                                 <Button onClick={this.imprimir} variant="contained" color="primary" size="medium">
                                                     Imprimir
                                                 </Button>
+                                                <NotaFiscalPanel vendaUid={this.state.lastVendaUid} />
                                             </Box>
                                         </Grid>
                                     </Grid>
@@ -685,17 +725,21 @@ export default class AddVenda extends Component<Props, State> {
                                             <ListItemText primary="Sem itens adicionados" />
                                         </ListItem>
                                     </List>
+                                    {this.state.lastVendaUid && (
+                                        <Box sx={{ mt: 2 }}>
+                                            <NotaFiscalPanel vendaUid={this.state.lastVendaUid} />
+                                        </Box>
+                                    )}
                                   </Paper>
                                 </Grid>
                             )}
                             <div className="printme">
-                                <img src={logo} alt={"logo"} style={{ width: '100%' }} />
-                                <h1 className="titulo-central" style={{ fontSize: 'xxx-large', fontWeight: '600' }}>Compras</h1>
+                                <img src={logo} alt={"logo"} />
+                                <h1 className="titulo-central" style={{ fontWeight: '600' }}>Compras</h1>
                                 <ul className="list-group">
                                     <li className="list-group-item">
                                         <div className="row">
                                             <div className="col-5"><strong>Produto</strong></div>
-                                            <div className="col-3 custom-div-valor"><strong>Valor item</strong></div>
                                             <div className="col-1 custom-div-center"><strong>Quant</strong></div>
                                             <div className="col-3 custom-div-valor"><strong>Total</strong></div>
                                         </div>
@@ -704,7 +748,6 @@ export default class AddVenda extends Component<Props, State> {
                                         <li className="list-group-item" key={index}>
                                             <div className="row">
                                                 <div className="col-5">{item.produto.nome}</div>
-                                                <div className="col-3 custom-div-valor">R$ {item.produto.valor.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                                                 <div className="col-1 custom-div-center">{item.quantidade.toLocaleString('pt-br', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</div>
                                                 <div className="col-3 custom-div-valor">R$ {item.valorItem.toLocaleString('pt-br', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                                             </div>
@@ -722,7 +765,7 @@ export default class AddVenda extends Component<Props, State> {
                                 </div>
                             </div>
                             {vendasEmAberto.length > 0 && (
-                                <Grid item xs={12}>
+                                <Grid item xs={12} className="no-printme">
                                     <Typography variant="h6" sx={{ textAlign: "center" }}>Pagamentos Pendentes</Typography>
                                     <List component={Paper}>
                                         {vendasEmAberto.map((venda, index) => (
@@ -748,7 +791,7 @@ export default class AddVenda extends Component<Props, State> {
                     )}
 
                 </FormControl>
-            </div>
+            </Box>
         )
     }
 }

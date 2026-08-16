@@ -21,6 +21,7 @@ export default class AddCategoria extends Component<Props, State> {
         this.onChangeNome = this.onChangeNome.bind(this);
         this.onChangeOrdem = this.onChangeOrdem.bind(this);
         this.onChangeTipo = this.onChangeTipo.bind(this);
+        this.onChangeNcmPadrao = this.onChangeNcmPadrao.bind(this);
         this.saveCategoria = this.saveCategoria.bind(this);
         this.newCategoria = this.newCategoria.bind(this);
 
@@ -29,6 +30,7 @@ export default class AddCategoria extends Component<Props, State> {
             nome: "",
             ordem: 0,
             tipo: "visivel",
+            ncmPadrao: "",
             submitted: false,
         };
     }
@@ -58,12 +60,19 @@ export default class AddCategoria extends Component<Props, State> {
         });
     }
 
+    onChangeNcmPadrao(e: ChangeEvent<HTMLInputElement>) {
+        this.setState({
+            ncmPadrao: e.target.value
+        });
+    }
+
     saveCategoria() {
         const data: CategoriaDTO = {
             uid: this.state.uid,
             nome: this.state.nome,
             ordem: this.state.ordem,
             tipo: this.state.tipo,
+            ncmPadrao: this.state.ncmPadrao,
         };
 
         CategoriaService.create(data)
@@ -84,12 +93,13 @@ export default class AddCategoria extends Component<Props, State> {
             nome: "",
             ordem: 0,
             tipo: "visivel",
+            ncmPadrao: "",
             submitted: false
         });
     }
 
     render() {
-        const { submitted, uid, nome, ordem, tipo } = this.state;
+        const { submitted, uid, nome, ordem, tipo, ncmPadrao } = this.state;
 
         return (
             <div>
@@ -149,6 +159,16 @@ export default class AddCategoria extends Component<Props, State> {
                                         <MenuItem value={"oculto"}>Oculto</MenuItem>
                                     </Select>
                                 </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="NCM Padrão"
+                                    value={ncmPadrao}
+                                    onChange={this.onChangeNcmPadrao}
+                                    name="ncmPadrao"
+                                    helperText="Usado para preencher automaticamente o NCM de novos produtos desta categoria"
+                                />
                             </Grid>
                             <Grid item xs={12}>
                                 <Box sx={{ display: "flex", gap: 1.5 }}>

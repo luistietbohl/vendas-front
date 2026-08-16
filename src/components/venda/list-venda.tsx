@@ -10,7 +10,8 @@ import 'dayjs/locale/en-gb';
 import moment from "moment";
 import { InputAdornment, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Button } from "@mui/material";
 import PageHeader from "../shell/PageHeader";
-import { Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
+import NotaFiscalPanel from "./nota-fiscal-panel";
 
 type Props = {};
 
@@ -250,6 +251,9 @@ export default class VendaList extends Component<Props, State> {
               <Typography>Cliente: {currentVenda.cliente}</Typography>
               <Typography>Data: {new Date(currentVenda.create).toLocaleString()}</Typography>
               <Typography sx={{ mb: 1 }}>Itens: {currentVenda.itens.length}</Typography>
+              <Box sx={{ mb: 2 }}>
+                <NotaFiscalPanel vendaUid={currentVenda.uid ?? null} />
+              </Box>
               <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 350 }} size="small" aria-label="a dense table">
                   <TableHead>
